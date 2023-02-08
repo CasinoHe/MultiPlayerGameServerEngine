@@ -1,0 +1,10 @@
+# ignore vscode and vs temporary files
+*.vscode
+*.vs
+*.code-workspace
+
+# ignore .DS_Store files
+*.DS_Store
+
+# ignore temporary build files
+build
