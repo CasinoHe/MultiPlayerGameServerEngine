@@ -8,3 +8,6 @@
 
 // global logger manager
 multiplayer_server::LoggerManager &g_logger_manager = multiplayer_server::LoggerManager::get_instance();
+
+// default logger
+std::shared_ptr<multiplayer_server::LoggerImp> g_logger = g_logger_manager.get_default_logger();

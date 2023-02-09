@@ -27,12 +27,15 @@ namespace multiplayer_server
     // The logger level is used to set the logger level
     // If the logger name already exists, it will return the existing logger
     // If the logger name does not exist, it will create a logger and return it
-    std::shared_ptr<LoggerImp> create_logger(const std::string &logger_name, LoggerLevel level);
+    std::shared_ptr<LoggerImp> create_logger(const std::string &logger_name, LoggerLevel level, const std::string &log_file_path = "", const std::string &config_file_path = "");
 
     // Get a logger
     // The logger name is used to identify the logger
     // If the logger name does not exist, it will return nullptr
     std::shared_ptr<LoggerImp> get_logger(const std::string &logger_name);
+
+    // Get default logger
+    std::shared_ptr<LoggerImp> get_default_logger() { return default_logger_; }
 
     // Set logger level
     // if logger name is empty, it will set all loggers level

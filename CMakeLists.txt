@@ -14,19 +14,6 @@ find_package(Boost COMPONENTS system program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 message(STATUS "include Boost directories: ${Boost_INCLUDE_DIRS}")
 
-if (USE_PROTOBUF)
-		# protobuf is required
-		find_package(Protobuf CONFIG REQUIRED)
-		include_directories(${Protobuf_INCLUDE_DIRS})
-		message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
-endif()
-
-if (USE_SPDLOG)
-		# spdlog is required
-		add_subdirectory(src/log/spdlog)
-		include_directories(src/log/spdlog/include)
-endif()
-
 # project settings
 set(MULTIPLAYER_SERVER_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${MULTIPLAYER_SERVER_ROOT_DIR})
@@ -36,9 +23,25 @@ set(MULTIPLAYER_SERVER_MAJOR_SRCS
 	${MULTIPLAYER_SERVER_ROOT_DIR}/log/logger_manager.cpp
 )
 
+if (USE_PROTOBUF)
+		# protobuf is required
+		find_package(Protobuf CONFIG REQUIRED)
+		include_directories(${Protobuf_INCLUDE_DIRS})
+		message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
+endif()
+
+if (USE_SPDLOG)
+		# spdlog is required
+		add_definitions(-DUSE_SPDLOG)
+		add_subdirectory(src/log/spdlog)
+		include_directories(src/log/spdlog/include)
+		list(APPEND MULTIPLAYER_SERVER_MAJOR_SRCS ${MULTIPLAYER_SERVER_ROOT_DIR}/log/spdlog_logger_imp.cpp)
+else()
+endif()
+
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
-set_target_properties(${PROJECT_NA} PROPERTIES CXX_STANDARD 17)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
 
 if (USE_PROTOBUF)

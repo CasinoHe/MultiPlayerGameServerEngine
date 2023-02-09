@@ -23,31 +23,28 @@ namespace multiplayer_server
   class LoggerImp
   {
   public:
-    LoggerImp();
-    ~LoggerImp();
+    LoggerImp(const std::string &tag, const std::string &logfilepath = "", const std::string &config_path = "") : tag_name_(tag), file_path_(logfilepath)
+    {
+    }
+    ~LoggerImp() {}
 
     // Initialize logger
     virtual bool init(const std::string &config_file_path) = 0;
 
     // set logger level
-    void set_level(LoggerLevel level) { level_ = level; }
+    virtual void set_level(LoggerLevel level) { level_ = level; } 
 
     // Log a message
+    virtual void debug(const std::string &msg) = 0;
     virtual void log(const std::string &msg) = 0;
+    virtual void info(const std::string &msg) = 0;
+    virtual void warn(const std::string &msg) = 0;
+    virtual void error(const std::string &msg) = 0;
+    virtual void critical(const std::string &msg) = 0;
 
-    // Log a message with level
-    virtual void log(const std::string &msg, const std::string &level) = 0;
-
-    // Log a message with level and file name
-    virtual void log(const std::string &msg, const std::string &level, const std::string &file_name) = 0;
-
-    // Log a message with level, file name and line number
-    virtual void log(const std::string &msg, const std::string &level, const std::string &file_name, int line_number) = 0;
-
-    // Log a message with level, file name, line number and function name
-    virtual void log(const std::string &msg, const std::string &level, const std::string &file_name, int line_number, const std::string &function_name) = 0;
-
-  private:
-    LoggerLevel level_;
+  protected:
+    std::string tag_name_ = "major"; // Log tag
+    LoggerLevel level_ = LoggerLevel::Debug;
+    std::string file_path_ = ""; // Log file name
   };
 }

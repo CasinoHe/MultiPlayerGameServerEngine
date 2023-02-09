@@ -1,4 +1,7 @@
 #include "logger_manager.h"
+#ifdef USE_SPDLOG
+#include "spdlog_logger_imp.h"
+#endif
 
 namespace multiplayer_server
 {
@@ -10,10 +13,14 @@ namespace multiplayer_server
 
   LoggerManager::LoggerManager()
   {
-    default_logger_ = std::make_shared<LoggerImp>();
+#ifdef USE_SPDLOG
+    default_logger_ = std::make_shared<SpdlogLoggerImp>("major");
+#else
+    static_assert(0, "please define one log library at least, currently suport: USE_SPDLOG")
+#endif
   }
 
-  std::shared_ptr<LoggerImp> LoggerManager::create_logger(const std::string &logger_name, LoggerLevel level)
+  std::shared_ptr<LoggerImp> LoggerManager::create_logger(const std::string &logger_name, LoggerLevel level, const std::string &log_file_path, const std::string &config_file_path)
   {
     auto it = loggers_.find(logger_name);
     if (it != loggers_.end())
@@ -21,7 +28,11 @@ namespace multiplayer_server
       return it->second;
     }
 
-    auto logger = std::make_shared<LoggerImp>();
+#ifdef USE_SPDLOG
+    auto logger = std::make_shared<SpdlogLoggerImp>(logger_name, log_file_path, config_file_path);
+#else
+    static_assert(0, "please define one log library at least, currently suport: USE_SPDLOG")
+#endif
     logger->set_level(level);
     loggers_[logger_name] = logger;
     return logger;
