@@ -1,13 +1,17 @@
-// Created: 2023.01.08
+// Created: 2023.02.08
 // Author: CasinoHe
 // Purpose: log include file
-
 #pragma once
 
 #include "logger_manager.h"
+#include <memory>
 
-// global logger manager
-multiplayer_server::LoggerManager &g_logger_manager = multiplayer_server::LoggerManager::get_instance();
+namespace multiplayer_server
+{
+  // variable declaration, see logger_manager.cpp
+  // global logger manager
+  extern LoggerManager &g_logger_manager;
 
-// default logger
-std::shared_ptr<multiplayer_server::LoggerImp> g_logger = g_logger_manager.get_default_logger();
+  // default logger
+  extern std::shared_ptr<LoggerImp> g_logger;
+}

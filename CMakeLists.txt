@@ -23,6 +23,7 @@ set(MULTIPLAYER_SERVER_MAJOR_SRCS
 	${MULTIPLAYER_SERVER_ROOT_DIR}/log/logger_manager.cpp
 )
 set(MULTIPLAYER_SERVER_NETWORK_SRC
+	${MULTIPLAYER_SERVER_ROOT_DIR}/network/asio_server.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/network/asio_tcp_connection.cpp 
 )
 

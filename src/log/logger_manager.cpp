@@ -7,6 +7,7 @@ namespace multiplayer_server
 {
   LoggerManager &LoggerManager::get_instance()
   {
+    // static std::shared_ptr<LoggerManager> instance = std::make_shared<LoggerManager>();
     static LoggerManager instance;
     return instance;
   }
@@ -68,4 +69,11 @@ namespace multiplayer_server
       }
     }
   }
+
+  // define global variables
+  // global logger manager
+  LoggerManager &g_logger_manager = LoggerManager::get_instance();
+
+  // default logger
+  std::shared_ptr<LoggerImp> g_logger = g_logger_manager.get_default_logger();
 }

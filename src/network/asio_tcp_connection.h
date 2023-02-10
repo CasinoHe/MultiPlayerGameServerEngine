@@ -32,9 +32,6 @@ namespace multiplayer_server
     // rsync connect to remote host
     virtual bool async_connect() override;
 
-    // async connected callback, result is true if connect successfully
-    virtual void on_connected(bool result) override;
-
     // send data to remote host
     // return true if send successfully
     virtual bool send(const void* data, size_t size) override;
@@ -45,8 +42,6 @@ namespace multiplayer_server
     // receive data from remote host
     // return true if receive successfully
     virtual bool receive(void* data, size_t size) override;
-    // receive callback
-    virtual void on_received(const void* data, size_t size) override;
 
     // close connection
     virtual void close() override;
@@ -54,7 +49,16 @@ namespace multiplayer_server
     // start receive data from remote host
     virtual void start_receive() override;
 
+    // get socket
+    std::shared_ptr<boost::asio::ip::tcp::socket> get_socket() const { return socket_; }
+
   protected:
+    // async connected callback, result is true if connect successfully
+    virtual void on_connected(bool result) override;
+
+    // receive callback
+    virtual void on_received(const void* data, size_t size) override;
+
     // handle connect
     void handle_connect(const boost::system::error_code& error);
 

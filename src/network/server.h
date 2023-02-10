@@ -17,7 +17,9 @@ namespace multiplayer_server
   class Server
   {
   public:
-    Server() = default;
+    Server(const std::string &ip_address, int port, bool has_tcp, bool has_udp)
+        : ip_address_(ip_address), port_(port), has_tcp_(has_tcp), has_udp_(has_udp) {}
+
     virtual ~Server() = default;
 
     virtual bool start() = 0;
