@@ -22,6 +22,9 @@ set(MULTIPLAYER_SERVER_MAJOR_SRCS
 	${MULTIPLAYER_SERVER_ROOT_DIR}/config/arg_parser.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/log/logger_manager.cpp
 )
+set(MULTIPLAYER_SERVER_NETWORK_SRC
+	${MULTIPLAYER_SERVER_ROOT_DIR}/network/asio_tcp_connection.cpp 
+)
 
 if (USE_PROTOBUF)
 		# protobuf is required
@@ -39,7 +42,7 @@ if (USE_SPDLOG)
 else()
 endif()
 
-add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS})
+add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)

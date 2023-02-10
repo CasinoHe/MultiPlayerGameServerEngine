@@ -46,7 +46,7 @@ namespace multiplayer_server
       return it->second;
     }
 
-    return default_logger_;
+    return nullptr;
   }
 
   void LoggerManager::set_logger_level(const std::string &logger_name, LoggerLevel level)

@@ -1,5 +1,5 @@
-#include <iostream>
 #include "config/arg_parser.h"
+#include <iostream>
 
 int main(int argc, const char **argv)
 {
