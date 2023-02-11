@@ -18,7 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # checkout repository and submodules
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
     - name: Setup
       # Install a system package required by our library
