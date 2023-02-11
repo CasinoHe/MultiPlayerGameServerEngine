@@ -165,6 +165,11 @@ namespace multiplayer_server
       }
     }
 
+    // set logger level
+    set_level(level_);
+    logger_->set_pattern(pattern);
+    logger_->flush_on(spdlog::level::debug);
+
     return true;
   }
 

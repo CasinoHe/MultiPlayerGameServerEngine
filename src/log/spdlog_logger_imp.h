@@ -36,9 +36,9 @@ namespace multiplayer_server
     bool need_log_time_ = true; // Whether to log time
     bool need_log_thread_ = true; // Whether to log thread
     bool need_log_level_ = true; // Whether to log level
-    bool need_log_source_ = true; // Whether to log source file name
-    bool need_log_line_ = true; // Whether to log line number
-    bool need_log_funcname_ = true; // Whether to log function name
+    bool need_log_source_ = false; // Whether to log source file name
+    bool need_log_line_ = false; // Whether to log line number
+    bool need_log_funcname_ = false; // Whether to log function name
 
     size_t log_file_size_ = 0; // Log file size
     size_t log_file_cnt_ = 0; // Log file count

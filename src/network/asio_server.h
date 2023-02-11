@@ -17,7 +17,7 @@ namespace multiplayer_server
   class AsioServer : public Server
   {
   public:
-    AsioServer(const std::string &ip_address, int port, bool has_tcp, bool has_udp);
+    AsioServer(const std::string &ip_address, int port, bool has_tcp = true, bool has_udp = false);
     virtual ~AsioServer();
 
     virtual bool set_io_context_thread_count(int count) { io_context_thread_count_ = count; return true; }

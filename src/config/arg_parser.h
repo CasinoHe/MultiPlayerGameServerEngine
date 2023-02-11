@@ -22,7 +22,7 @@ namespace multiplayer_server
     bool parse();
 
     // Get config file path
-    inline const std::string &get_config_file_path() const;
+    const std::string &get_config_file_path() const;
 
   private:
     int argc_ = 0;

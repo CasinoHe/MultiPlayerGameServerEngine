@@ -23,6 +23,31 @@ namespace multiplayer_server
       socket_ = std::make_shared<boost::asio::ip::tcp::socket>(*io_context_);
     }
 
+    // first, open socket_ with ipv4 or ipv6 according to ip
+    // 1. check ip is valid
+    boost::system::error_code error;
+    boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, error);
+    if (error)
+    {
+      logger_->error(std::format("ip {} is invalid", ip));
+      return;
+    }
+
+    // 2. find out ip is tcp v4 or v6
+    if (address.is_v4())
+    {
+      socket_->open(boost::asio::ip::tcp::v4());
+    }
+    else if (address.is_v6())
+    {
+      socket_->open(boost::asio::ip::tcp::v6());
+    }
+    else
+    {
+      logger_->error(std::format("ip {} is invalid", ip));
+      return;
+    }
+
     // set options for multiplayer game connection
     socket_->set_option(boost::asio::ip::tcp::no_delay(true));
     socket_->set_option(boost::asio::socket_base::keep_alive(true));
