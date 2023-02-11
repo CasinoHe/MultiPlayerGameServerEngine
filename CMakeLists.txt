@@ -30,7 +30,7 @@ set(MULTIPLAYER_SERVER_NETWORK_SRC
 
 if (USE_PROTOBUF)
 		# protobuf is required
-		find_package(Protobuf CONFIG REQUIRED)
+		find_package(Protobuf REQUIRED)
 		include_directories(${Protobuf_INCLUDE_DIRS})
 		message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
 endif()
