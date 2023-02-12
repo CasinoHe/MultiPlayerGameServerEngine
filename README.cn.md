@@ -1,7 +1,10 @@
 # 一个简单的通用多人联网游戏服务器
 
-![ubuntu](https://github.com/github/docs/actions/workflows/cmake.yml/badge.svg)
 [Readme in English](README.md)
+
+## build status
+
+![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/cmake.yml/badge.svg)
 
 ## 简介
 

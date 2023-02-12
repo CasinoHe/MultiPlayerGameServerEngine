@@ -1,8 +1,10 @@
 # A simple general multiplayer game server
 
-![ubuntu](https://github.com/github/docs/actions/workflows/cmake.yml/badge.svg)
-![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/cmake.yml/badge.svg)
 [中文简介](README.cn.md)
+
+## build status
+
+![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/cmake.yml/badge.svg)
 
 ## Introduction
 

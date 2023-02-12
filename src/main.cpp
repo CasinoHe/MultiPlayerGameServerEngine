@@ -65,8 +65,8 @@ int main(int argc, const char **argv)
     return EXIT_FAILURE;
   }
 
-  const std::string &ip = json_parser->get<std::string>("ip", "127.0.0.1");
-  int port = json_parser->get<int>("port", 8080);
+  std::string ip = json_parser->get<std::string>("ip", "127.0.0.1");
+  int port = json_parser->get("port", 8080);
 
   // create asio server
   auto asio_server = std::make_unique<AsioServer>(ip, port, true, false);
