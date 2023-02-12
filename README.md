@@ -1,13 +1,14 @@
-# 一个简单的通用多人联网游戏服务器
+# A simple general multiplayer game server
 
-[Readme in English](README.en.md)
+![ubuntu](https://github.com/github/docs/actions/workflows/cmake.yml/badge.svg)
+[中文简介](README.cn.md)
 
-## 简介
+## Introduction
 
-## 特性
+## Features
 
-- 单进程支持超过100万的同时在线玩家连接
-- 网络层高效实现多线程处理压缩、加密，为巨量玩家的连接处理做保证
-- c++基于Boost库，脚本可采取python，能够极快的提升开发效率
+- Massive multiple player support. Supports more than 1 million connections on single process at the same time.
+- Efficiently multi-threaded processing compression and encryption, and guarantee the connection processing of huge amounts of players.
+- C++ Based on the boost library, the script can be writen in Python, which can improve development efficiency.
 
-## 使用
+## Usage
