@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.8)
 
 project(MultiPlayerServer)
 
@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # all options
 option(USE_PROTOBUF "Use protobuf for network communication" ON)
 option(USE_SPDLOG "Use spdlog for logging" ON)
+option(USE_FMT "Use fmt for log formatting" OFF)
 
 # boost library is required
 find_package(Boost COMPONENTS system program_options REQUIRED)
@@ -35,6 +36,13 @@ if (USE_PROTOBUF)
 		message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
 endif()
 
+if (USE_FMT)
+		# fmt is required
+		add_definitions(-DUSE_FMT)
+		add_subdirectory(src/log/fmt)
+		include_directories(src/log/fmt/include)
+endif()
+
 if (USE_SPDLOG)
 		# spdlog is required
 		add_definitions(-DUSE_SPDLOG)
@@ -46,10 +54,15 @@ endif()
 
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
 
 if (USE_PROTOBUF)
 		# if protobuf is used, link it
 		target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf protobuf::libprotobuf-lite) # protobuf::libprotoc
+endif()
+
+if(USE_FMT)
+	# if fmt is used, link it
+	target_link_libraries(${PROJECT_NAME} PRIVATE fmt)
 endif()

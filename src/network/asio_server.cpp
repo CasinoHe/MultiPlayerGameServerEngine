@@ -1,6 +1,5 @@
 #include "asio_server.h"
 #include "asio_tcp_connection.h"
-#include <format>
 
 namespace multiplayer_server
 {
@@ -95,7 +94,7 @@ namespace multiplayer_server
       // set status
       status_ = ServerStatus::kRunning;
       // log start time and port
-      logger_->info(std::format("start tcp accept on {}:{}", ip_address_, port_));
+      logger_->info("start tcp accept on {}:{}", ip_address_, port_);
     }
   
     void AsioServer::start_udp_accept()

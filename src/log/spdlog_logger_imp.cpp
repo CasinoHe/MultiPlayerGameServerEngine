@@ -168,7 +168,6 @@ namespace multiplayer_server
     // set logger level
     set_level(level_);
     logger_->set_pattern(pattern);
-    logger_->flush_on(spdlog::level::debug);
 
     return true;
   }
@@ -190,6 +189,7 @@ namespace multiplayer_server
     if (logger_ && level_map.find(level) != level_map.end())
     {
       logger_->set_level(level_map[level]);
+      logger_->flush_on(level_map[level]);
     }
   }
 

@@ -7,6 +7,11 @@
 #pragma once
 
 #include <string>
+#ifdef USE_FMT
+#include <fmt/color.h>
+#include <fmt/chrono.h>
+#include <fmt/ranges.h>
+#endif
 
 namespace multiplayer_server
 {
@@ -41,6 +46,22 @@ namespace multiplayer_server
     virtual void warn(const std::string &msg) = 0;
     virtual void error(const std::string &msg) = 0;
     virtual void critical(const std::string &msg) = 0;
+
+    // log a message with variadic arguments
+    template <typename... Args>
+    void debug(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+    template <typename... Args>
+    void log(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+    template <typename... Args>
+    void info(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+    template <typename... Args>
+    void warn(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+    template <typename... Args>
+    void error(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+    template <typename... Args>
+    void critical(const char *fmt, const Args &... args) { throw std::runtime_error("not implemented"); }
+
+
 
   protected:
     std::string tag_name_ = "major"; // Log tag

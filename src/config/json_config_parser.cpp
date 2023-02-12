@@ -1,5 +1,4 @@
 #include "json_config_parser.h"
-#include <format>
 
 namespace multiplayer_server
 {
@@ -21,7 +20,7 @@ namespace multiplayer_server
     }
     catch (const boost::property_tree::json_parser::json_parser_error &e)
     {
-      logger_->error(std::format("JsonConfigParser::parse() failed, error: {}", e.what()));
+      logger_->error("JsonConfigParser::parse() failed, error: {}", e.what());
       return false;
     }
 

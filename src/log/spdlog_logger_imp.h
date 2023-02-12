@@ -32,6 +32,85 @@ namespace multiplayer_server
     void error(const std::string &msg) override;
     void critical(const std::string &msg) override;
 
+    // Log message with variadic arguments
+    template <typename... Args>
+    void log(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->info(fmt, args...);
+      }
+      else
+      {
+        spdlog::info(fmt, args...);
+      }
+    }
+
+    template <typename... Args>
+    void debug(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->debug(fmt, args...);
+      }
+      else
+      {
+        spdlog::debug(fmt, args...);
+      }
+    }
+
+    template <typename... Args>
+    void info(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->info(fmt, args...);
+      }
+      else
+      {
+        spdlog::info(fmt, args...);
+      }
+    }
+
+    template <typename... Args>
+    void warn(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->warn(fmt, args...);
+      }
+      else
+      {
+        spdlog::warn(fmt, args...);
+      }
+    }
+
+    template <typename... Args>
+    void error(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->error(fmt, args...);
+      }
+      else
+      {
+        spdlog::error(fmt, args...);
+      }
+    }
+
+    template <typename... Args>
+    void critical(const char *fmt, const Args &... args)
+    {
+      if (logger_)
+      {
+        logger_->critical(fmt, args...);
+      }
+      else
+      {
+        spdlog::critical(fmt, args...);
+      }
+    }
+
   private:
     bool need_log_time_ = true; // Whether to log time
     bool need_log_thread_ = true; // Whether to log thread

@@ -4,7 +4,6 @@
 #include "network/asio_server.h"
 #include <iostream>
 #include <filesystem>
-#include <format>
 #include <chrono>
 
 int check_config_file(const std::string &config_file_path)
@@ -20,19 +19,19 @@ int check_config_file(const std::string &config_file_path)
   // config file is not exist, exit with error
   if (!std::filesystem::exists(config_file_path))
   {
-    g_logger->error(std::format("config file is not exist, path: {}", config_file_path));
+    g_logger->error("config file is not exist, path: {}", config_file_path);
     return EXIT_FAILURE;
   }
   // config file path is not a file, exit with error
   if (!std::filesystem::is_regular_file(config_file_path))
   {
-    g_logger->error(std::format("config file path is not a file, path: {}", config_file_path));
+    g_logger->error("config file path is not a file, path: {}", config_file_path);
     return EXIT_FAILURE;
   }
   // config file path is not a json file, exit with error
   if (config_file_path.substr(config_file_path.find_last_of('.')) != ".json")
   {
-    g_logger->error(std::format("config file path is not a json file, path: {}", config_file_path));
+    g_logger->error("config file path is not a json file, path: {}", config_file_path);
     return EXIT_FAILURE;
   }
 

@@ -3,7 +3,6 @@
 // Purpose: bottom tcp connection class using boost::asio library
 #include "asio_tcp_connection.h"
 #include "log/logger.h"
-#include <format>
 
 namespace multiplayer_server
 {
@@ -29,7 +28,7 @@ namespace multiplayer_server
     boost::asio::ip::address address = boost::asio::ip::address::from_string(ip, error);
     if (error)
     {
-      logger_->error(std::format("ip {} is invalid", ip));
+      logger_->error("ip {} is invalid", ip);
       return;
     }
 
@@ -44,7 +43,7 @@ namespace multiplayer_server
     }
     else
     {
-      logger_->error(std::format("ip {} is invalid", ip));
+      logger_->error("ip {} is invalid", ip);
       return;
     }
 
@@ -87,7 +86,7 @@ namespace multiplayer_server
       return false;
     }
 
-    logger_->debug(std::format("connect to {}:{}", ip_, port_));
+    logger_->debug("connect to {}:{}", ip_, port_);
     socket_->connect(*endpoint_iterator, error);
 
     if (error)
@@ -95,7 +94,7 @@ namespace multiplayer_server
       return false;
     }
     set_status(ConnectionStatus::kConnected);
-    logger_->debug(std::format("connect to {}:{} successfully", ip_, port_));
+    logger_->debug("connect to {}:{} successfully", ip_, port_);
     return true;
   }
 
@@ -115,7 +114,7 @@ namespace multiplayer_server
     socket_->async_connect(*endpoint_iterator, std::bind(&AsioTcpConnection::handle_connect, this, std::placeholders::_1));
 
     set_status(ConnectionStatus::kConnecting);
-    logger_->debug(std::format("async connect to {}:{}", ip_, port_));
+    logger_->debug("async connect to {}:{}", ip_, port_);
     return true;
   }
 
@@ -124,12 +123,12 @@ namespace multiplayer_server
   {
     if (error)
     {
-      logger_->debug(std::format("async connect to {}:{} failed", ip_, port_));
+      logger_->debug("async connect to {}:{} failed", ip_, port_);
       set_status(ConnectionStatus::kDisconnected);
       on_connected(false);
       return;
     }
-    logger_->debug(std::format("async connect to {}:{} successfully", ip_, port_));
+    logger_->debug("async connect to {}:{} successfully", ip_, port_);
     set_status(ConnectionStatus::kConnected);
     on_connected(true);
   }
@@ -145,7 +144,7 @@ namespace multiplayer_server
       }
       catch(const std::exception& e)
       {
-        logger_->error(std::format("on_connected callback error {}", e.what()));
+        logger_->error("on_connected callback error {}", e.what());
       }
     }
 
@@ -163,10 +162,10 @@ namespace multiplayer_server
     socket_->write_some(boost::asio::buffer(data, size), error);
     if (error)
     {
-      logger_->debug(std::format("send data to {}:{} failed, size {}", ip_, port_, size));
+      logger_->debug("send data to {}:{} failed, size {}", ip_, port_, size);
       return false;
     }
-    logger_->debug(std::format("send data to {}:{} successfully, size {}", ip_, port_, size));
+    logger_->debug("send data to {}:{} successfully, size {}", ip_, port_, size);
     return true;
   }
 
@@ -184,7 +183,7 @@ namespace multiplayer_server
     // second, check if is sending
     if (is_sending_)
     {
-      logger_->error(std::format("async send data add to queue, but queue size is {}", send_buffer_.size()));
+      logger_->error("async send data add to queue, but queue size is {}", send_buffer_.size());
 
       // add to send queue and wait for send
       send_buffer_.emplace_back(data, size);
@@ -196,7 +195,7 @@ namespace multiplayer_server
                              std::bind(&AsioTcpConnection::handle_send, this,
                                          std::placeholders::_1,
                                          std::placeholders::_2));
-    logger_->debug(std::format("async send data to {}:{} size {}", ip_, port_, size));
+    logger_->debug("async send data to {}:{} size {}", ip_, port_, size);
      return true;
   }
 
@@ -224,16 +223,16 @@ namespace multiplayer_server
                                 std::bind(&AsioTcpConnection::handle_send, this,
                                           std::placeholders::_1,
                                           std::placeholders::_2));
-      logger_->debug(std::format("async send data to {}:{} size {}", ip_, port_, send_buffer_.front().size()));
+      logger_->debug("async send data to {}:{} size {}", ip_, port_, send_buffer_.front().size());
     }
 
     if (error)
     {
-      logger_->debug(std::format("async send data to {}:{} failed, size {} error code {} try close", ip_, port_, error.what(), bytes_transferred));
+      logger_->debug("async send data to {}:{} failed, size {} error code {} try close", ip_, port_, error.what(), bytes_transferred);
     }
     else
     {
-      logger_->debug(std::format("async send data to {}:{} successfully, size {}", ip_, port_, bytes_transferred));
+      logger_->debug("async send data to {}:{} successfully, size {}", ip_, port_, bytes_transferred);
     }
   }
 
@@ -245,10 +244,10 @@ namespace multiplayer_server
     socket_->read_some(boost::asio::buffer(data, size), error);
     if (error)
     {
-      logger_->debug(std::format("receive data from {}:{} failed, size {}", ip_, port_, size));
+      logger_->debug("receive data from {}:{} failed, size {}", ip_, port_, size);
       return false;
     }
-    logger_->debug(std::format("receive data from {}:{} successfully, size {}", ip_, port_, size));
+    logger_->debug("receive data from {}:{} successfully, size {}", ip_, port_, size);
     on_received(data, size);
     return true;
   }
@@ -267,7 +266,7 @@ namespace multiplayer_server
   {
     if (error)
     {
-      logger_->debug(std::format("receive data from {}:{} failed, error code {}", ip_, port_, error.what()));
+      logger_->debug("receive data from {}:{} failed, error code {}", ip_, port_, error.what());
       close();
       return;
     }
@@ -315,7 +314,7 @@ namespace multiplayer_server
       }
       catch(const std::exception& e)
       {
-        logger_->error(std::format("on_received callback error {}", e.what()));
+        logger_->error("on_received callback error {}", e.what());
       }
     }
   }
