@@ -160,7 +160,7 @@ namespace multiplayer_server
       }
   
       // create thread pool
-      for (int i = 0; i < thread_count; i++)
+      for (std::size_t i = 0; i < thread_count; i++)
       {
         io_context_threads_pool_.emplace_back([this]() {
           io_context_->run();

@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # all options
 option(USE_PROTOBUF "Use protobuf for network communication" ON)
 option(USE_SPDLOG "Use spdlog for logging" ON)
-option(USE_FMT "Use fmt for log formatting" OFF)
+option(USE_FMT "Use fmt for log formatting" ON)
 option(USE_RAPIDJSON "Use rapidjson for json parsing" ON)
 option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" OFF)
 

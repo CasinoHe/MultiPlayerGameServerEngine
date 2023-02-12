@@ -2,6 +2,11 @@
 #include "spdlog/sinks/stdout_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
+#ifdef USE_FMT
+#include <fmt/core.h>
+#include <fmt/chrono.h>
+#include <fmt/ranges.h>
+#endif
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <filesystem>
@@ -192,18 +197,6 @@ namespace multiplayer_server
     {
       logger_->set_level(level_map[level]);
       logger_->flush_on(level_map[level]);
-    }
-  }
-
-  void SpdlogLoggerImp::log(const std::string &msg)
-  {
-    if (logger_)
-    {
-      logger_->info(msg);
-    }
-    else
-    {
-      spdlog::info(msg);
     }
   }
 
