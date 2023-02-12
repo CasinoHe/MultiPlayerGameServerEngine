@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_PROTOBUF "Use protobuf for network communication" ON)
 option(USE_SPDLOG "Use spdlog for logging" ON)
 option(USE_FMT "Use fmt for log formatting" OFF)
+option(USE_RAPIDJSON "Use rapidjson for json parsing" ON)
+option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" OFF)
 
 # boost library is required
 find_package(Boost COMPONENTS system program_options REQUIRED)
@@ -30,26 +32,37 @@ set(MULTIPLAYER_SERVER_NETWORK_SRC
 )
 
 if (USE_PROTOBUF)
-		# protobuf is required
-		find_package(Protobuf REQUIRED)
-		include_directories(${Protobuf_INCLUDE_DIRS})
-		message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
+	# protobuf is required
+	find_package(Protobuf REQUIRED)
+	include_directories(${Protobuf_INCLUDE_DIRS})
+	message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
 endif()
 
 if (USE_FMT)
-		# fmt is required
-		add_definitions(-DUSE_FMT)
-		add_subdirectory(src/log/fmt)
-		include_directories(src/log/fmt/include)
+	# fmt is required
+	add_definitions(-DUSE_FMT)
+	add_subdirectory(src/log/fmt)
+	include_directories(src/log/fmt/include)
 endif()
 
 if (USE_SPDLOG)
-		# spdlog is required
-		add_definitions(-DUSE_SPDLOG)
-		add_subdirectory(src/log/spdlog)
-		include_directories(src/log/spdlog/include)
-		list(APPEND MULTIPLAYER_SERVER_MAJOR_SRCS ${MULTIPLAYER_SERVER_ROOT_DIR}/log/spdlog_logger_imp.cpp)
+	# spdlog is required
+	add_definitions(-DUSE_SPDLOG)
+	add_subdirectory(src/log/spdlog)
+	include_directories(src/log/spdlog/include)
+	list(APPEND MULTIPLAYER_SERVER_MAJOR_SRCS ${MULTIPLAYER_SERVER_ROOT_DIR}/log/spdlog_logger_imp.cpp)
 else()
+endif()
+
+if (USE_RAPIDJSON)
+	# rapidjson is required
+	add_definitions(-DUSE_RAPIDJSON)
+	include_directories(common/rapidjson/include)
+elseif(USE_BOOST_JSON_PARSER)
+	# boost json parser is required
+	add_definitions(-DUSE_BOOST_JSON_PARSER)
+else ()
+	message(FATAL_ERROR "No json parser is used")
 endif()
 
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC})

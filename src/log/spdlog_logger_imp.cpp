@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace multiplayer_server
 {
@@ -35,6 +36,7 @@ namespace multiplayer_server
     }
     catch(std::exception &e)
     {
+      std::cerr << "cannot read json config: " << e.what() << std::endl;
       return false;
     }
 

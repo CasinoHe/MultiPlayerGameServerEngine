@@ -4,3 +4,6 @@
 [submodule "src/log/fmt"]
 	path = src/log/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "common/rapidjson"]
+	path = common/rapidjson
+	url = https://github.com/Tencent/rapidjson.git

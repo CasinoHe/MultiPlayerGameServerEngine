@@ -4,10 +4,16 @@
 #pragma once
 
 #include "log/logger.h"
+#ifdef USE_BOOST_JSON_PARSER
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#endif
+#ifdef USE_RAPIDJSON
+#include <rapidjson/document.h>
+#endif
 #include <string>
 #include <memory>
+#include <type_traits>
 
 namespace multiplayer_server
 {
@@ -24,12 +30,134 @@ namespace multiplayer_server
     template <typename T>
     T get(const std::string &key, const T &default_value) const 
     {
+#ifdef USE_BOOST_JSON_PARSER
       return config_tree_.get<T>(key, default_value);
+#endif
+#ifdef USE_RAPIDJSON
+      // if has the key, return the value, otherwise return the default value
+      if (config_tree_.HasMember(key.c_str()))
+      {
+        // get rapidjson::Value
+        auto &value = config_tree_[key.c_str()];
+
+        // because of if constexpr, compiler will optimize the code
+        // every instance of this function will only have one if-else branch
+        if constexpr (std::is_same_v<T, int>)
+        {
+          if (value.IsInt())
+          {
+            return value.GetInt();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not int");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same_v<T, unsigned int>)
+        {
+          if (value.IsUint())
+          {
+            return value.GetUint();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not unsigned int");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same_v<T, int64_t>)
+        {
+          if (value.IsInt64())
+          {
+            return value.GetInt64();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not int64_t");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same_v<T, uint64_t>)
+        {
+          if (value.IsUint64())
+          {
+            return value.GetUint64();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not uint64_t");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same<T, double>::value)
+        {
+          if (value.IsDouble())
+          {
+            return value.GetDouble();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not double");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same<T, float>::value)
+        {
+          if (value.IsFloat())
+          {
+            return value.GetFloat();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not float");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same<T, bool>::value)
+        {
+          if (value.IsBool())
+          {
+            return value.GetBool();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not bool");
+            return default_value;
+          }
+        }
+        else if constexpr (std::is_same<T, std::string>::value)
+        {
+          if (value.IsString())
+          {
+            return value.GetString();
+          }
+          else
+          {
+            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not string");
+            return default_value;
+          }
+        }
+        else
+        {
+          static_assert(false, "Unsupported json value type");
+        }
+      }
+      else
+      {
+        return default_value;
+      }
+#endif
     }
 
   private:
     std::string config_file_path_;
+#ifdef USE_BOOST_JSON_PARSER
     boost::property_tree::ptree config_tree_;
+#endif
+#ifdef USE_RAPIDJSON
+    rapidjson::Document config_tree_;
+#endif
     std::shared_ptr<LoggerImp> logger_;
   };
 }
