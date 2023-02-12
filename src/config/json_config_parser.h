@@ -126,7 +126,7 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same_v<std::remove_const<std::remove_reference<const T&>::type>::type, std::string>)
+        else if constexpr (std::is_same_v<std::remove_const<std::remove_reference<T>::type>::type, std::string>)
         {
           if (value.IsString())
           {
