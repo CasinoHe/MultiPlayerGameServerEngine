@@ -126,7 +126,9 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same_v<std::remove_const<std::remove_reference<T>::type>::type, std::string>)
+        // std::string is a special case, because of std::string is not a primitive type
+        // first, remove const and reference, then check if it is std::string
+        else if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<T>>, std::string>)
         {
           if (value.IsString())
           {
