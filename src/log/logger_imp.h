@@ -7,6 +7,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 #ifdef USE_FMT
 #include <fmt/color.h>
 #include <fmt/chrono.h>
