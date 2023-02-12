@@ -90,7 +90,7 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same<T, double>::value)
+        else if constexpr (std::is_same_v<T, double>)
         {
           if (value.IsDouble())
           {
@@ -102,7 +102,7 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same<T, float>::value)
+        else if constexpr (std::is_same_v<T, float>)
         {
           if (value.IsFloat())
           {
@@ -114,7 +114,7 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same<T, bool>::value)
+        else if constexpr (std::is_same_v<T, bool>)
         {
           if (value.IsBool())
           {
@@ -126,7 +126,7 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same<T, std::string>::value)
+        else if constexpr (std::is_same_v<T, std::string>)
         {
           if (value.IsString())
           {
@@ -140,7 +140,7 @@ namespace multiplayer_server
         }
         else
         {
-          static_assert(false, "Unsupported json value type");
+          static_assert(false, "Unsupported json value type" + typeid(T).name().c_str());
         }
       }
       else
