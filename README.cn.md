@@ -4,7 +4,7 @@
 
 ## build status
 
-![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/cmake.yml/badge.svg)
+![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/ubuntu.yml/badge.svg)
 
 ## 简介
 
