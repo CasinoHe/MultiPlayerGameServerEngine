@@ -228,7 +228,7 @@ namespace multiplayer_server
 
     if (error)
     {
-      logger_->debug("async send data to {}:{} failed, size {} error code {} try close", ip_, port_, error.what(), bytes_transferred);
+      logger_->debug("async send data to {}:{} failed, size {} error code {} try close", ip_, port_, error.message(), bytes_transferred);
     }
     else
     {
@@ -266,7 +266,7 @@ namespace multiplayer_server
   {
     if (error)
     {
-      logger_->debug("receive data from {}:{} failed, error code {}", ip_, port_, error.what());
+      logger_->debug("receive data from {}:{} failed, error code {}", ip_, port_, error.message());
       close();
       return;
     }

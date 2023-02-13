@@ -2,13 +2,12 @@
 #include "spdlog/sinks/stdout_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
+#include "config/json_config_parser.h"
 #ifdef USE_FMT
 #include <fmt/core.h>
 #include <fmt/chrono.h>
 #include <fmt/ranges.h>
 #endif
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <filesystem>
 #include <string>
 #include <map>
@@ -33,38 +32,32 @@ namespace multiplayer_server
       return false;
     }
 
-    // read config file
-    boost::property_tree::ptree pt;
-    try
+    JsonConfigParser parser(config_file_path);
+    if (!parser.parse())
     {
-      boost::property_tree::read_json(config_file_path, pt);
-    }
-    catch(std::exception &e)
-    {
-      std::cerr << "cannot read json config: " << e.what() << std::endl;
       return false;
     }
 
     // get log time
-    need_log_time_ = pt.get<bool>("log_time", true);
+    need_log_time_ = parser.get<bool>("log_time", true);
 
     // get log thread
-    need_log_thread_ = pt.get<bool>("log_thread", true);
+    need_log_thread_ = parser.get<bool>("log_thread", true);
 
     // get log level
-    need_log_level_ = pt.get<bool>("log_level", true);
+    need_log_level_ = parser.get<bool>("log_level", true);
 
     // get_log_source
-    need_log_source_ = pt.get<bool>("log_source", true);
+    need_log_source_ = parser.get<bool>("log_source", true);
 
     // get log line
-    need_log_line_ = pt.get<bool>("log_line", true);
+    need_log_line_ = parser.get<bool>("log_line", true);
 
     // get log function name
-    need_log_funcname_ = pt.get<bool>("log_funcname", true);
+    need_log_funcname_ = parser.get<bool>("log_funcname", true);
 
     // get log level
-    std::string level = pt.get<std::string>("level", "off");
+    std::string level = parser.get<std::string>("level", "off");
     std::map<std::string, LoggerLevel> level_map = {
       {"debug", LoggerLevel::Debug},
       {"info", LoggerLevel::Info},
@@ -78,22 +71,22 @@ namespace multiplayer_server
     }
 
     // get log tag name
-    tag_name_ = pt.get<std::string>("log_tag_name", "major");
+    tag_name_ = parser.get<std::string>("log_tag_name", "major");
 
     // get log file max size
-    log_file_size_ = pt.get<size_t>("log_file_max_size", 0);
+    log_file_size_ = parser.get<size_t>("log_file_max_size", 0);
 
     // get log file max number
-    log_file_cnt_ = pt.get<size_t>("log_file_max_number", 3);
+    log_file_cnt_ = parser.get<size_t>("log_file_max_number", 3);
 
     // get log file name
-    std::string log_file_name = pt.get<std::string>("log_file_name", "");
+    std::string log_file_name = parser.get<std::string>("log_file_name", "");
 
     // get log file dir
-    std::string log_file_dir = pt.get<std::string>("log_file_dir", "");
+    std::string log_file_dir = parser.get<std::string>("log_file_dir", "");
 
     // get log file extension
-    std::string log_file_extension = pt.get<std::string>("log_file_extension", "");
+    std::string log_file_extension = parser.get<std::string>("log_file_extension", "");
 
     // get log file full path
     if (!log_file_name.empty())
@@ -106,10 +99,10 @@ namespace multiplayer_server
     }
 
     // get log console
-    bool log_console = pt.get<bool>("log_console", true);
+    bool log_console = parser.get<bool>("log_console", true);
 
     // get log console color
-    bool log_console_color = pt.get<bool>("log_console_color", true);
+    bool log_console_color = parser.get<bool>("log_console_color", true);
 
     return true;
   }

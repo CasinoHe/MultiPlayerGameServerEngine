@@ -126,10 +126,15 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        // std::string is a special case, because of std::string is not a primitive type
-        // first, remove const and reference, then check if it is std::string
-        else if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<T>>, std::string>)
+        // if T is rapidjson::Value, return it directly
+        else if constexpr (std::is_same_v<T, rapidjson::Value>)
         {
+          return value;
+        }
+        // else is std::string
+        else
+        {
+          // TODO: check the type of value, convert to std::string
           if (value.IsString())
           {
             return value.GetString();
@@ -139,11 +144,6 @@ namespace multiplayer_server
             logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not string");
             return default_value;
           }
-        }
-        else
-        {
-          // static_assert and find out what's the type of T
-          static_assert(false, "JsonConfigParser::get() failed, error: unsupported type");
         }
       }
       else
