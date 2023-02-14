@@ -26,6 +26,8 @@ jobs:
     # get cmake
     - name: Get cmake
       uses: lukka/get-cmake@latest
+    
+    -name: find workspace
       run: find $RUNNER_WORKSPACE
       shell: bash
 
