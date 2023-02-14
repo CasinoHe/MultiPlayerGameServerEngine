@@ -5,6 +5,7 @@
 ## build status
 
 ![ubuntu](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/ubuntu.yml/badge.svg)
+![macos](https://github.com/casinohe/SimpleMultiPlayerGameServer/actions/workflows/macos.yml/badge.svg)
 
 ## 简介
 
