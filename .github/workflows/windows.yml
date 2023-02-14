@@ -39,6 +39,7 @@ jobs:
         # This one is not needed, as it is the default value anyway.
         # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         vcpkgJsonGlob: '**/cmakepresets/vcpkg.json'
+        vcpkgGitCommitId: "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7"
 
     - name: Prints output of run-vcpkg's action.
       run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
