@@ -61,10 +61,8 @@ jobs:
         cd vcpkg
         vcpkg integrate install
 
-    - name: Running cmake
+    - name: CMake Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
 
-    - name: Build Solution
-      run: |
-        cd build
-        cmake --build . --parallel --config ${{matrix.build_type}}
+    - name: Cmake Build
+      run: cmake --build  ${{github.workspace}}/build --parallel --config ${{matrix.build_type}}
