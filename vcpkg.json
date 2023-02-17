@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "builtin-baseline": "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7",
   "dependencies": [
     "boost",
     {
