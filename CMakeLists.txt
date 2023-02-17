@@ -57,7 +57,7 @@ endif()
 if (USE_RAPIDJSON)
 	# rapidjson is required
 	add_definitions(-DUSE_RAPIDJSON)
-	include_directories(common/rapidjson/include)
+	include_directories(src/common/rapidjson/include)
 elseif(USE_BOOST_JSON_PARSER)
 	# boost json parser is required
 	add_definitions(-DUSE_BOOST_JSON_PARSER)

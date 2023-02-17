@@ -5,5 +5,5 @@
 	path = src/log/fmt
 	url = https://github.com/fmtlib/fmt.git
 [submodule "common/rapidjson"]
-	path = common/rapidjson
+	path = src/common/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
