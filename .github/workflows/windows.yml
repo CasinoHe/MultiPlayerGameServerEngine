@@ -9,7 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   VCPKG_DEFAULT_TRIPLET: x64-windows
-  BUILD_TYPE: [Debug, Release]
+  BUILD_TYPE: [ Debug, Release ]
 
 jobs:
   build:
