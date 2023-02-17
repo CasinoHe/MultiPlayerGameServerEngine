@@ -135,7 +135,7 @@ namespace multiplayer_server
         }
         else
         {
-          logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "type is not supported");
+          logger_->error("JsonConfigParser::get() {} failed, type name: {}", key, typeid(T).name());
           return default_value;
         }
       }
@@ -157,7 +157,7 @@ namespace multiplayer_server
       }
       else
       {
-        logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "type is not supported");
+        logger_->error("JsonConfigParser::get() {} failed, type name: {}", key, typeid(T).name());
         return default_value;
       }
 #endif

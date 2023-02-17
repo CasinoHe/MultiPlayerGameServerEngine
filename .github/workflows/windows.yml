@@ -28,7 +28,7 @@ jobs:
       uses: lukka/get-cmake@latest
     
     - name: Restore vcpkg and its artifacts.
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: vcpkg-cache
       with:
         # The first path is where vcpkg generates artifacts while consuming the vcpkg.json manifest file.
@@ -54,9 +54,7 @@ jobs:
         mkdir build -force
         git clone https://github.com/Microsoft/vcpkg.git
         cd vcpkg
-        .\bootstrap-vcpkg.bat
-        vcpkg install boost:x64-windows
-        bcpkg install protobuf:x64-windows
+        vcpkg integrate install
 
     - name: Running cmake
       run: |
@@ -67,26 +65,3 @@ jobs:
       run: |
         cd build
         cmake --build . --parallel --config Release
-
-    # # setup vcpkg for build artifacts
-    # - name: Setup
-    #   uses: lukka/run-vcpkg@v10
-    #   id: runvcpkg
-    #   with:
-    #     # This one is not needed, as it is the default value anyway.
-    #     # vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-    #     vcpkgJsonGlob: '**/vcpkg/vcpkg.json'
-    #     vcpkgGitCommitId: "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7"
-    #     runVcpkgInstall: true
-
-    # - name: Prints output of run-vcpkg's action.
-    #   run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
-
-    # - name: Build
-    #   uses: lukka/run-cmake@v10
-    #   id: runcmake
-    #   with:
-    #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-    #     # configurePreset: 'ninja-multi-vcpkg'
-    #     # buildPreset: 'ninja-multi-vcpkg'
-    #     buildPresetAdditionalArgs: '[`--config Release`]'
