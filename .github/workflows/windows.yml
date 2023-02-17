@@ -9,6 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   VCPKG_DEFAULT_TRIPLET: x64-windows
+  BUILD_TYPE: [Debug, Release]
 
 jobs:
   build:
@@ -50,18 +51,16 @@ jobs:
     - name: Get vcpkg
       if: ${{ runner.os == 'Windows' && steps.vcpkg-cache.outputs.cache-hit != 'true' }}
       run: |
-        cd ${{ github.workspace }}
+        cd ${{github.workspace}}
         mkdir build -force
         git clone https://github.com/Microsoft/vcpkg.git
         cd vcpkg
         vcpkg integrate install
 
     - name: Running cmake
-      run: |
-        cd ${{ github.workspace }}
-        cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
     - name: Build Solution
       run: |
         cd build
-        cmake --build . --parallel --config Release
+        cmake --build . --parallel --config ${{env.BUILD_TYPE}}
