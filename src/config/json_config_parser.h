@@ -35,13 +35,32 @@ namespace multiplayer_server
 #endif
 #ifdef USE_RAPIDJSON
       // if has the key, return the value, otherwise return the default value
-      if (config_tree_.HasMember(key.c_str()))
+      if (!config_tree_.HasMember(key.c_str()))
       {
-        // get rapidjson::Value
-        auto &value = config_tree_[key.c_str()];
+        return default_value;
+      }
 
-        // because of if constexpr, compiler will optimize the code
-        // every instance of this function will only have one if-else branch
+      // get rapidjson::Value
+      auto &value = config_tree_[key.c_str()];
+
+      // because of if constexpr, compiler will optimize the code
+      // every instance of this function will only have one if-else branch
+      // first, check if type T is bool
+      if constexpr (std::is_same_v<T, bool>)
+      {
+        if (value.IsBool())
+        {
+          return value.GetBool();
+        }
+        else
+        {
+          logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not bool");
+          return default_value;
+        }
+      }
+      // second, check if type T is integral
+      else if constexpr (std::is_integral_v<T>)
+      {
         if constexpr (std::is_same_v<T, int>)
         {
           if (value.IsInt())
@@ -114,40 +133,31 @@ namespace multiplayer_server
             return default_value;
           }
         }
-        else if constexpr (std::is_same_v<T, bool>)
-        {
-          if (value.IsBool())
-          {
-            return value.GetBool();
-          }
-          else
-          {
-            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not bool");
-            return default_value;
-          }
-        }
-        // if T is rapidjson::Value, return it directly
-        else if constexpr (std::is_same_v<T, rapidjson::Value>)
-        {
-          return value;
-        }
-        // else is std::string
         else
         {
-          // TODO: check the type of value, convert to std::string
-          if (value.IsString())
-          {
-            return value.GetString();
-          }
-          else
-          {
-            logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not string");
-            return default_value;
-          }
+          logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "type is not supported");
+          return default_value;
         }
+      }
+      else if constexpr (std::is_convertible_v<T, std::string>)
+      {
+        if (value.IsString())
+        {
+          return value.GetString();
+        }
+        else
+        {
+          logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "value is not string");
+          return default_value;
+        }
+      }
+      else if constexpr (std::is_same_v<T, rapidjson::Value>)
+      {
+        return value;
       }
       else
       {
+        logger_->error("JsonConfigParser::get() {} failed, error: {}", key, "type is not supported");
         return default_value;
       }
 #endif
