@@ -59,6 +59,7 @@ jobs:
         mkdir build -force
         git clone https://github.com/Microsoft/vcpkg.git
         cd vcpkg
+        git checkout 2022.08.15
         vcpkg integrate install
 
     - name: CMake Configure
