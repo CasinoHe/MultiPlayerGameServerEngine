@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        build_type: [Debug, Release]
+        build_type: [Release]
         # include:
         #   - shared: -DBUILD_SHARED_LIBS=ON
 
@@ -50,7 +50,7 @@ jobs:
         # The key includes: hash of the vcpkg.json file, the hash of the vcpkg Git commit id, and the used vcpkg's triplet. The vcpkg's commit id would suffice, but computing an hash out it does not harm.
         # Note: given a key, the cache content is immutable. If a cache entry has been created improperly, in order the recreate the right content the key must be changed as well, and it must be brand new (i.e. not existing already).
         key: |
-          ${{ hashFiles( 'vcpkg.json' ) }}-${{ runner.os }}-cache-key-v1
+          ${{ hashFiles( 'vcpkg/vcpkg.json' ) }}-${{ runner.os }}-cache-key-v1
 
     - name: Get vcpkg
       if: ${{ runner.os == 'Windows' && steps.vcpkg-cache.outputs.cache-hit != 'true' }}
@@ -59,7 +59,7 @@ jobs:
         mkdir build -force
         git clone https://github.com/Microsoft/vcpkg.git
         cd vcpkg
-        git checkout 2022.08.15
+        git checkout 2023.01.09
         vcpkg integrate install
 
     - name: CMake Configure

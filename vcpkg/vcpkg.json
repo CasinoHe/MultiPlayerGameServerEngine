@@ -1,14 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-  "builtin-baseline": "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7",
+  "builtin-baseline": "f14984af3738e69f197bf0e647a8dca12de92996",
   "dependencies": [
     {
       "name": "boost",
-      "version>=": "1.79.0"
+      "version>=": "1.81.0"
     },
     {
       "name": "protobuf",
-      "version>=": "3.21.4"
+      "version>=": "3.21.8"
     }
   ]
 }
