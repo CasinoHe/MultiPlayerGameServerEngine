@@ -30,6 +30,11 @@ set(MULTIPLAYER_SERVER_NETWORK_SRC
 	${MULTIPLAYER_SERVER_ROOT_DIR}/network/asio_server.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/network/asio_tcp_connection.cpp 
 )
+set(MULTIPLAYER_SERVER_GAME_SRC
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/entity.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/component.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/entity_factory.cpp
+)
 
 if (USE_PROTOBUF)
 	# protobuf is required
@@ -65,7 +70,7 @@ else ()
 	message(FATAL_ERROR "No json parser is used")
 endif()
 
-add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC})
+add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC} ${MULTIPLAYER_SERVER_GAME_SRC})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
