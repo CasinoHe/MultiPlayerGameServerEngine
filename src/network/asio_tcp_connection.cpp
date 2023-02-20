@@ -22,6 +22,8 @@ namespace multiplayer_server
       socket_ = std::make_shared<boost::asio::ip::tcp::socket>(*io_context_);
     }
 
+    logger_ = g_logger_manager.create_logger("AsioTcpConnection", LoggerLevel::Debug, "log/AsioTcpConnection.log");
+
     // first, open socket_ with ipv4 or ipv6 according to ip
     // 1. check ip is valid
     boost::system::error_code error;
@@ -51,8 +53,6 @@ namespace multiplayer_server
     socket_->set_option(boost::asio::ip::tcp::no_delay(true));
     socket_->set_option(boost::asio::socket_base::keep_alive(true));
     socket_->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-
-    logger_ = g_logger_manager.create_logger("AsioTcpConnection", LoggerLevel::Debug, "log/AsioTcpConnection.log");
   }
 
   AsioTcpConnection::~AsioTcpConnection()
