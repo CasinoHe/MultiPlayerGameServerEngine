@@ -138,16 +138,15 @@ namespace multiplayer_server
     std::shared_ptr<LoggerImp> logger_ = nullptr;
   };
 
-  // use ip, port, entityid to identify the position of a  server entity
-  class ServerEntityPos
+  // use ip, port, entityid to identify the proxy of a  server entity
+  class EntityProxy
   {
   public:
     std::string ip = "";
     int port = 0;
     std::string entity_id = "";
-    bool validate = false;        // if the pos is valid
 
-    ServerEntityPos(std::shared_ptr<LoggerImp> logger) : logger_(logger) {}
+    EntityProxy(std::shared_ptr<LoggerImp> logger = g_logger) : logger_(logger) {}
 
     // get the string of the position
     std::string get_pos() const
@@ -165,6 +164,7 @@ namespace multiplayer_server
         ip = pos.substr(0, pos1);
         port = std::stoi(pos.substr(pos1 + 1, pos2 - pos1 - 1));
         entity_id = pos.substr(pos2 + 1);
+        validate = true;
         return true;
       }
       catch (const std::exception &e)
@@ -174,8 +174,20 @@ namespace multiplayer_server
       }
     }
 
+    void set_proxy(const std::string &id, const std::string &ip, int port)
+    {
+      this->entity_id = id;
+      this->ip = ip;
+      this->port = port;
+      validate = true;
+    }
+
+    // get valid
+    bool is_valid() const { return validate; }
+
   private:
     std::shared_ptr<LoggerImp> logger_ = nullptr;
+    bool validate = false;        // if the pos is valid
   };
 
   class ServerEntity : public Entity
@@ -200,15 +212,20 @@ namespace multiplayer_server
     };
 
   public:
-    ServerEntity(const std::string &id);
+    ServerEntity(const std::string &id, ServerEntityType type, const std::string &ip, int port);
     virtual ~ServerEntity();
 
     virtual void update(float dt) override;
     virtual void render() override;
 
+    // get server type
+    const ServerEntityType get_server_type() const { return type_; }
+    // get server proxy
+    const EntityProxy &get_proxy() const { return proxy_; }
+
   protected:
-    // server position, which server this entity belongs to
-    ServerEntityPos pos_;
+    // server proxy, which server this entity belongs to
+    EntityProxy proxy_;
 
     // server entity type
     ServerEntityType type_ = ServerEntityType::kServiceEntity;

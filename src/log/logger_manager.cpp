@@ -76,4 +76,6 @@ namespace multiplayer_server
 
   // default logger
   std::shared_ptr<LoggerImp> g_logger = g_logger_manager.get_default_logger();
+
+  std::shared_ptr<LoggerImp> g_file_logger = g_logger_manager.create_logger("common", LoggerLevel::Debug, "log/major.log");
 }

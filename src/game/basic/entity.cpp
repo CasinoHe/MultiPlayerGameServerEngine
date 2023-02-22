@@ -48,11 +48,9 @@ namespace multiplayer_server
     }
   }
 
-  ServerEntity::ServerEntity(const std::string &id) : Entity(id), pos_(logger_)
+  ServerEntity::ServerEntity(const std::string &id, ServerEntityType type, const std::string &ip, int port) : Entity(id), type_(type)
   {
-    pos_.entity_id = id_;
-    pos_.ip = "";
-    pos_.port = 0;
+    proxy_.set_proxy(id, ip, port);
   }
 
   ServerEntity::~ServerEntity()
@@ -61,10 +59,12 @@ namespace multiplayer_server
 
   void ServerEntity::update(float dt)
   {
+    Entity::update(dt);
   }
 
   void ServerEntity::render()
   {
+    Entity::render();
   }
 
   ClientEntity::ClientEntity(const std::string &id) : Entity(id)

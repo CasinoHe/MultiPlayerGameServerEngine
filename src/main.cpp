@@ -2,6 +2,7 @@
 #include "config/json_config_parser.h"
 #include "log/logger.h"
 #include "network/asio_server.h"
+#include "game/game_main.h"
 #include <iostream>
 #include <filesystem>
 #include <chrono>
@@ -68,9 +69,19 @@ int main(int argc, const char **argv)
   std::string ip = json_parser->get<std::string>("ip", "127.0.0.1");
   int port = json_parser->get("port", 8080);
 
+  // create game_main object, init login service
+  auto game_main = std::make_unique<GameMain>(ip, port);
+  game_main->init_game_service("LoginService");
+  auto service = game_main->get_game_service("LoginService");
+
   // create asio server
   auto asio_server = std::make_unique<AsioServer>(ip, port, true, false);
   asio_server->set_io_context_thread_count(10);
+
+  // register connected callback
+  // asio_server->register_on_tcp_connection_accepted(service);
+  // asio_server->register_on_udp_connection_accepted(service);
+
   asio_server->start();
 
   // wait for 60 seconds

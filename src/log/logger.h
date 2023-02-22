@@ -14,4 +14,6 @@ namespace multiplayer_server
 
   // default logger
   extern std::shared_ptr<LoggerImp> g_logger;
+
+  extern std::shared_ptr<LoggerImp> g_file_logger;
 }

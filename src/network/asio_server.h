@@ -36,6 +36,8 @@ namespace multiplayer_server
     void register_on_tcp_connection_accepted(std::function<bool(std::shared_ptr<AsioTcpConnection>)> &callback) { on_tcp_connection_accepted_callback_ = callback; }
     // game module callback when server closed
     void register_on_server_closed(std::function<void()> &callback) { on_server_closed_callback_ = callback; }
+    // udp connection callback
+    void register_on_udp_connection_accepted(std::function<bool(std::shared_ptr<AsioTcpConnection>)> &callback) { on_udp_connection_accepted_callback_ = callback; }
 
   protected:
     void start_io_context_thread_pool();
@@ -53,5 +55,8 @@ namespace multiplayer_server
     std::function<bool(std::shared_ptr<AsioTcpConnection>)> on_tcp_connection_accepted_callback_;
     // callback game module when server closed
     std::function<void()> on_server_closed_callback_;
+
+    // callback game module when a udp connection is accepted
+    std::function<bool(std::shared_ptr<AsioTcpConnection>)> on_udp_connection_accepted_callback_;
   };
 }
