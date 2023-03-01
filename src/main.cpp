@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <chrono>
 #include <thread>
+#include <functional>
 
 int check_config_file(const std::string &config_file_path)
 {
@@ -71,20 +72,20 @@ int main(int argc, const char **argv)
 
   // create game_main object, init login service
   auto game_main = std::make_unique<GameMain>(ip, port);
-  game_main->init_game_service("LoginService");
-  auto service = game_main->get_game_service("LoginService");
+  game_main->init_all_game_services();
 
   // create asio server
   auto asio_server = std::make_unique<AsioServer>(ip, port, true, false);
   asio_server->set_io_context_thread_count(10);
 
   // register connected callback
-  // asio_server->register_on_tcp_connection_accepted(service);
-  // asio_server->register_on_udp_connection_accepted(service);
+  std::function<bool(std::shared_ptr<AsioTcpConnection>)> callback = std::bind(&GameMain::on_client_connected<AsioTcpConnection>, game_main.get(), std::placeholders::_1);
+  asio_server->register_on_tcp_connection_accepted(callback);
 
+  // start asio server
   asio_server->start();
 
-  // wait for 60 seconds
+  // Test: wait for 60 seconds
   std::this_thread::sleep_for(std::chrono::seconds(60));
 
   return EXIT_SUCCESS;

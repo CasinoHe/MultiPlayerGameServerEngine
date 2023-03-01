@@ -31,4 +31,12 @@ namespace multiplayer_server
     }
     return nullptr;
   }
+
+  void GameMain::init_all_game_services()
+  {
+    // first, init required service
+    init_game_service("LoginService");
+
+    // then, read config file to init other services
+  }
 }

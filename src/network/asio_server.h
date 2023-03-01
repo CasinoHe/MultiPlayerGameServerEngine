@@ -56,7 +56,7 @@ namespace multiplayer_server
     // callback game module when server closed
     std::function<void()> on_server_closed_callback_;
 
-    // callback game module when a udp connection is accepted
+    // TODO: callback game module when a udp connection is accepted
     std::function<bool(std::shared_ptr<AsioTcpConnection>)> on_udp_connection_accepted_callback_;
   };
 }

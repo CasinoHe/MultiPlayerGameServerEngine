@@ -1,14 +1,17 @@
 // Created: 2023.02.22
 // Author: CasinoHe
 // Purpose: record global services
+#include "game/service/login_service.h"
 #pragma once
 #include <map>
 #include <string>
 #include <memory>
+#include <functional>
 
 namespace multiplayer_server
 {
   class ServerEntity;
+  class Connection;
 
   // global game interfaces and data
   class GameMain
@@ -24,10 +27,28 @@ namespace multiplayer_server
     GameMain& operator=(GameMain&&) = delete;
 
   public:
-    // init game service
-    void init_game_service(const std::string &name);
+    // init all game services
+    void init_all_game_services();
+
     // get game service
     std::shared_ptr<ServerEntity> get_game_service(const std::string &service_name);
+
+    // client connected callback, since there are varities of connection type, we need to implement using template
+    template <typename T>
+    bool on_client_connected(std::shared_ptr<T> connection)
+    {
+      // get login service
+      std::shared_ptr<LoginService> login_service = std::dynamic_pointer_cast<LoginService>(get_game_service("LoginService"));
+      if (login_service)
+      {
+        return login_service->on_client_connected(connection);
+      }
+      return false;
+    }
+
+  private:
+    // init a game service
+    void init_game_service(const std::string &name);
 
   private:
     // all game services
