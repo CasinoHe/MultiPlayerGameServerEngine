@@ -7,3 +7,9 @@
 [submodule "common/rapidjson"]
 	path = src/common/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "src/common/boost"]
+	path = src/common/boost
+	url = https://github.com/boostorg/boost.git
+[submodule "src/common/protobuf"]
+	path = src/common/protobuf
+	url = https://github.com/protocolbuffers/protobuf.git
