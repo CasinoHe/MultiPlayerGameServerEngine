@@ -142,16 +142,16 @@ namespace multiplayer_server
   class EntityProxy
   {
   public:
-    std::string ip = "";
-    int port = 0;
-    std::string entity_id = "";
+    std::string ip_ = "";
+    int port_ = 0;
+    std::string entity_id_ = "";
 
     EntityProxy(std::shared_ptr<LoggerImp> logger = g_logger) : logger_(logger) {}
 
     // get the string of the position
     std::string get_pos() const
     {
-      return ip + "_" + std::to_string(port) + "_" + entity_id;
+      return ip_ + "_" + std::to_string(port_) + "_" + entity_id_;
     }
 
     // parse the string to ServerEntityPos
@@ -161,9 +161,9 @@ namespace multiplayer_server
       {
         auto pos1 = pos.find("_");
         auto pos2 = pos.rfind("_");
-        ip = pos.substr(0, pos1);
-        port = std::stoi(pos.substr(pos1 + 1, pos2 - pos1 - 1));
-        entity_id = pos.substr(pos2 + 1);
+        ip_ = pos.substr(0, pos1);
+        port_ = std::stoi(pos.substr(pos1 + 1, pos2 - pos1 - 1));
+        entity_id_ = pos.substr(pos2 + 1);
         validate = true;
         return true;
       }
@@ -176,9 +176,9 @@ namespace multiplayer_server
 
     void set_proxy(const std::string &id, const std::string &ip, int port)
     {
-      this->entity_id = id;
-      this->ip = ip;
-      this->port = port;
+      this->entity_id_ = id;
+      this->ip_ = ip;
+      this->port_ = port;
       validate = true;
     }
 

@@ -31,7 +31,7 @@ namespace multiplayer_server
   class LoggerImp
   {
   public:
-    LoggerImp(const std::string &tag, const std::string &logfilepath = "", const std::string &config_path = "") : tag_name_(tag), file_path_(logfilepath)
+    LoggerImp(const std::string &tag, const std::string &logfilepath = "", const std::string &config_path = "") : tag_name_(tag), file_path_(logfilepath), config_path_(config_path)
     {
     }
     ~LoggerImp() {}
@@ -96,5 +96,6 @@ namespace multiplayer_server
     std::string tag_name_ = "major"; // Log tag
     LoggerLevel level_ = LoggerLevel::Debug;
     std::string file_path_ = ""; // Log file name
+    std::string config_path_ = ""; // log config file path
   };
 }

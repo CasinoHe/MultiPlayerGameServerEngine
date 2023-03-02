@@ -20,7 +20,7 @@ namespace multiplayer_server
   class AsioTcpConnection : public Connection
   {
   public:
-    AsioTcpConnection(const std::string &ip, uint16_t port, std::shared_ptr<boost::asio::io_context> io_context);
+    AsioTcpConnection(const std::string &ip, int port, std::shared_ptr<boost::asio::io_context> io_context);
     virtual ~AsioTcpConnection();
 
     // get connection status

@@ -7,7 +7,7 @@
 namespace multiplayer_server
 {
 
-  AsioTcpConnection::AsioTcpConnection(const std::string &ip, uint16_t port, std::shared_ptr<boost::asio::io_context> io_context)
+  AsioTcpConnection::AsioTcpConnection(const std::string &ip, int port, std::shared_ptr<boost::asio::io_context> io_context)
       : Connection(ip, port)
   {
     // if io_context is nullptr, create a new one
