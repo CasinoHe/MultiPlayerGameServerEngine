@@ -39,7 +39,7 @@ namespace multiplayer_server
     void set_port(int port) { port_ = port; }
 
     // status operations
-    const ServerStatus status() const { return status_; }
+    ServerStatus status() const { return status_; }
     bool is_running() const { return status_ == ServerStatus::kRunning; }
     bool is_stopped() const { return status_ == ServerStatus::kStopped; }
 

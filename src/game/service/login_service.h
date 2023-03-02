@@ -23,6 +23,7 @@ namespace multiplayer_server
     template <typename T>
     bool on_client_connected(std::shared_ptr<T> connection)
     {
+      std::shared_ptr<T> conn = connection;
       logger_->debug("LoginService::on_client_connected");
       return true;
     }

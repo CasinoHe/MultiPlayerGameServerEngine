@@ -104,8 +104,11 @@ if (MSVC)
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 	target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS})
 else()
+	# gcc and clang treat warning as error
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 endif()
+add_dependencies(${PROJECT_NAME} Boost)
 
 if (USE_PROTOBUF)
 	# if protobuf is used, link it

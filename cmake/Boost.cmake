@@ -44,10 +44,16 @@ else ()
     set(Boost_BUILD_VARIANT "release")
 endif()
 
+# define BOOST_BIND_GLOBAL_PLACEHOLDERS, fix error when include program_options.hpp:
+# compile error message: /usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) 
+# in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, 
+# or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+add_compile_definitions(BOOST_BIND_GLOBAL_PLACEHOLDERS)
+
 message(STATUS "build External boost, variant ${Boost_BUILD_VARIANT}, architecture ${Boost_ARCH}, cmake build type is ${CMAKE_BUILD_TYPE}")
 # external build boost
 ExternalProject_Add(Boost
-    PREFIX ${THIRD_PARTIES_BUILD_DIR}/boost
+    PREFIX ${THIRD_PARTIES_BUILD_DIR}/Boost
     URL ${Boost_DOWNLOAD_URL}
     URL_HASH SHA256=${Boost_SHA256}
     DOWNLOAD_DIR ${THIRD_PARTIES_DOWNLOAD_DIR}/Boost
@@ -59,8 +65,8 @@ ExternalProject_Add(Boost
 
 # set boost library and include directories
 set(Boost_FOUND TRUE)
-set(Boost_INCLUDE_DIRS ${THIRD_PARTIES_BUILD_DIR}/boost/src/boost)
-set(Boost_LIBRARY_DIRS ${THIRD_PARTIES_BUILD_DIR}/boost/src/boost/stage/lib)
+set(Boost_INCLUDE_DIRS ${THIRD_PARTIES_BUILD_DIR}/Boost/src/Boost)
+set(Boost_LIBRARY_DIRS ${THIRD_PARTIES_BUILD_DIR}/Boost/src/Boost/stage/lib)
 
 if (NOT MSVC)
     set(Boost_LIBRARIES

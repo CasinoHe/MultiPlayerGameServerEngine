@@ -219,7 +219,7 @@ namespace multiplayer_server
     virtual void render() override;
 
     // get server type
-    const ServerEntityType get_server_type() const { return type_; }
+    ServerEntityType get_server_type() const { return type_; }
     // get server proxy
     const EntityProxy &get_proxy() const { return proxy_; }
 
