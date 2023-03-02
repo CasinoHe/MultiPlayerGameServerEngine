@@ -44,12 +44,6 @@ else ()
     set(Boost_BUILD_VARIANT "release")
 endif()
 
-# determine toolset
-if (WIN32)
-    set(Boost_TOOLSET "msvc-${MSVC_TOOLSET_VERSION}")
-    message(STATUS "Build external boost using toolset ${Boost_TOOLSET}")
-endif()
-
 message(STATUS "build External boost, variant ${Boost_BUILD_VARIANT}, architecture ${Boost_ARCH}, cmake build type is ${CMAKE_BUILD_TYPE}")
 # external build boost
 ExternalProject_Add(Boost
@@ -58,7 +52,7 @@ ExternalProject_Add(Boost
     URL_HASH SHA256=${Boost_SHA256}
     DOWNLOAD_DIR ${THIRD_PARTIES_DOWNLOAD_DIR}/Boost
     CONFIGURE_COMMAND ${Boost_BOOTSTRAP_COMMAND}
-    BUILD_COMMAND ${Boost_BUILD_COMMAND} --layout=system ${Boost_BUILD_LIBRARIES} address-model=${Boost_ARCH} link=${Boost_BUILD_LIBS_TYPE} runtime-link=${Boost_RUNTIME_LINK_TYPE} variant=${Boost_BUILD_VARIANT} toolset=${Boost_TOOLSET} threading=multi stage
+    BUILD_COMMAND ${Boost_BUILD_COMMAND} ${Boost_BUILD_LIBRARIES} address-model=${Boost_ARCH} link=${Boost_BUILD_LIBS_TYPE} runtime-link=${Boost_RUNTIME_LINK_TYPE} variant=${Boost_BUILD_VARIANT} threading=multi stage
     BUILD_IN_SOURCE TRUE
     INSTALL_COMMAND ""
 )
@@ -68,15 +62,9 @@ set(Boost_FOUND TRUE)
 set(Boost_INCLUDE_DIRS ${THIRD_PARTIES_BUILD_DIR}/boost/src/boost)
 set(Boost_LIBRARY_DIRS ${THIRD_PARTIES_BUILD_DIR}/boost/src/boost/stage/lib)
 
-# if (WIN32)
-#     set(Boost_LIBRARIES
-#         ${Boost_LIBRARY_DIRS}/libboost_system-vc${MSVC_TOOLSET_VERSION}-mt-${Boost_LINK_GD_FLAG}x${Boost_ARCH}-${BOOST_MAJOR_VERSION}_${BOOST_MINOR_VERSION}.lib
-#         ${Boost_LIBRARY_DIRS}/libboost_program_options-vc${MSVC_TOOLSET_VERSION}-mt-${Boost_LINK_GD_FLAG}x${Boost_ARCH}-${BOOST_MAJOR_VERSION}_${BOOST_MINOR_VERSION}.lib
-#     )
-# else ()
-message(STATUS "suffix is ${CMAKE_STATIC_LIBRARY_SUFFIX}")
-set(Boost_LIBRARIES
-    ${Boost_LIBRARY_DIRS}/libboost_system${CMAKE_STATIC_LIBRARY_SUFFIX}
-    ${Boost_LIBRARY_DIRS}/libboost_program_options${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
-# endif()
+if (NOT MSVC)
+    set(Boost_LIBRARIES
+        ${Boost_LIBRARY_DIRS}/libboost_system${CMAKE_STATIC_LIBRARY_SUFFIX}
+        ${Boost_LIBRARY_DIRS}/libboost_program_options${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+endif()

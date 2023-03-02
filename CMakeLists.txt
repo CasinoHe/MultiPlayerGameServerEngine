@@ -11,25 +11,26 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # all options
-option(USE_PROTOBUF "Use protobuf for network communication" ON)
+option(USE_PROTOBUF "Use protobuf for network communication" OFF)
 option(USE_SPDLOG "Use spdlog for logging" ON)
 option(USE_FMT "Use fmt for log formatting" ON)
-option(USE_RAPIDJSON "Use rapidjson for json parsing" ON)
-option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" OFF)
+option(USE_RAPIDJSON "Use rapidjson for json parsing" OFF)
+option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" ON)
 
 # set project root directory
 set(MULTIPLAYER_SERVER_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # boost library is required
-# build boost library locally, avoid version conflicts
+# build boost library locally, avoid version conflicts and macro conflicts, so static link it to avoid dll conflicts
 # boost is built using bjam, so use externalproject_add to build it
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-# first, set external build environment
+# first, set external build environment for all external build projects
 set(THIRD_PARTIES_DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/thirdparties/downloads)
 set(THIRD_PARTIES_BUILD_DIR ${CMAKE_BINARY_DIR}/thirdparties/build)
 set(THIRD_PARTIES_INSTALL_DIR ${CMAKE_BINARY_DIR}/thirdparties/install)
-# build boost library by externalproject_add
+# build boost library using externalproject_add
 include(ExternalProject)
+
 include(Boost)
 # add boost include directories
 include_directories(${Boost_INCLUDE_DIRS})
@@ -96,9 +97,15 @@ else ()
 endif()
 
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC} ${MULTIPLAYER_SERVER_GAME_SRC})
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES} ${ZLIB_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
+if (MSVC)
+	# msvc will link library automated
+	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+	target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS})
+else()
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
+endif()
 
 if (USE_PROTOBUF)
 	# if protobuf is used, link it
