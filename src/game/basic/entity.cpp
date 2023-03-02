@@ -77,6 +77,7 @@ namespace multiplayer_server
 
   void ClientEntity::update(float dt)
   {
+    Entity::update(dt);
   }
 
   void ClientEntity::render()

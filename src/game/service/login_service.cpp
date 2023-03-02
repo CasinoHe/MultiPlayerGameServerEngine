@@ -13,6 +13,7 @@ namespace multiplayer_server
 
   void LoginService::update(float dt)
   {
+    ServerEntity::update(dt);
   }
 
   void LoginService::render()

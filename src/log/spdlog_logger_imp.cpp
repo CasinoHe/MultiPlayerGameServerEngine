@@ -99,10 +99,10 @@ namespace multiplayer_server
     }
 
     // get log console
-    bool log_console = parser.get<bool>("log_console", true);
+    // bool log_console = parser.get<bool>("log_console", true);
 
     // get log console color
-    bool log_console_color = parser.get<bool>("log_console_color", true);
+    // bool log_console_color = parser.get<bool>("log_console_color", true);
 
     return true;
   }

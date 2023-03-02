@@ -23,7 +23,7 @@ namespace multiplayer_server
   class Connection
   {
   public:
-    Connection(const std::string &ip, uint16_t port)
+    Connection(const std::string &ip, int port)
     {
       ip_ = ip;
       port_ = port;
@@ -90,7 +90,7 @@ namespace multiplayer_server
     // connection status
     ConnectionStatus status_{ConnectionStatus::kNone};
     std::string ip_; // remote host ip
-    uint16_t port_;  // remote host port
+    int port_;  // remote host port
 
     // connected callback
     std::function<void(bool)> connected_callback_ = nullptr;
