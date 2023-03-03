@@ -110,7 +110,7 @@ else()
 endif()
 
 # link neccessary libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE zlibstatic)
 add_dependencies(${PROJECT_NAME} Boost zlib)
 
 if (USE_PROTOBUF)

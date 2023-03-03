@@ -17,18 +17,19 @@ set(ZLIB_FOUND TRUE)
 set(ZLIB_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/src/common/zlib ${MULTIPLAYER_SERVER_ROOT_DIR}/common/zlib)
 set(ZLIB_INCLUDE_DIR ${CMAKE_BINARY_DIR}/src/common/zlib ${MULTIPLAYER_SERVER_ROOT_DIR}/common/zlib)
 
+# protobuf need ZLIB_LIBRARY macros
 # there are different names for the library on different platforms
 if (MSVC)
-	set(ZLIB_LIBRARIES
-		${ZLIB_LIBRARY_DIRS}/zlibd${CMAKE_STATIC_LIBRARY_SUFFIX}
-	)
-	set(ZLIB_LIBRARY
-		${ZLIB_LIBRARY_DIRS}/zlibd${CMAKE_STATIC_LIBRARY_SUFFIX}
-	)
+	if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+		set(ZLIB_LIBRARY
+			${ZLIB_LIBRARY_DIRS}/zlibstaticd${CMAKE_STATIC_LIBRARY_SUFFIX}
+		)
+	else()
+		set(ZLIB_LIBRARY
+			${ZLIB_LIBRARY_DIRS}/zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX}
+		)
+	endif()
 else()
-	set(ZLIB_LIBRARIES
-		${ZLIB_LIBRARY_DIRS}/libz${CMAKE_STATIC_LIBRARY_SUFFIX}
-	)
 	set(ZLIB_LIBRARY
 		${ZLIB_LIBRARY_DIRS}/libz${CMAKE_STATIC_LIBRARY_SUFFIX}
 	)
