@@ -15,7 +15,7 @@ namespace multiplayer_server
   {
   public:
     SpdlogLoggerImp(const std::string &logger_name, const std::string& logpath = "", const std::string &configpath = "");
-    ~SpdlogLoggerImp();
+    virtual ~SpdlogLoggerImp();
 
     // Initialize logger
     bool init(const std::string &config_file_path) override;
