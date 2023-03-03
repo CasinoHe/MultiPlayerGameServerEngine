@@ -137,3 +137,7 @@ if(USE_FMT)
 	# if fmt is used, link it
 	target_link_libraries(${PROJECT_NAME} PRIVATE fmt)
 endif()
+
+if (USE_SPDLOG)
+	target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
+endif()
