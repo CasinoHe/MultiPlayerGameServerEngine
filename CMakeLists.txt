@@ -111,7 +111,7 @@ endif()
 
 # link neccessary libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE zlibstatic)
-add_dependencies(${PROJECT_NAME} Boost zlib)
+add_dependencies(${PROJECT_NAME} Boost zlibstatic zlib)
 
 if (USE_PROTOBUF)
 	# if protobuf is used, link it
