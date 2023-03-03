@@ -85,6 +85,9 @@ endif()
 
 if (USE_SPDLOG)
 	# spdlog is required
+	if (USE_FMT)
+	set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Use external fmt library" FORCE)
+	endif()
 	add_definitions(-DUSE_SPDLOG)
 	add_subdirectory(src/log/spdlog)
 	include_directories(src/log/spdlog/include)
@@ -135,7 +138,7 @@ endif()
 
 if(USE_FMT)
 	# if fmt is used, link it
-	target_link_libraries(${PROJECT_NAME} PRIVATE fmt)
+	target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 endif()
 
 if (USE_SPDLOG)
