@@ -11,11 +11,11 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # all options
-option(USE_PROTOBUF "Use protobuf for network communication" OFF)
+option(USE_PROTOBUF "Use protobuf for network communication" ON)
 option(USE_SPDLOG "Use spdlog for logging" ON)
 option(USE_FMT "Use fmt for log formatting" ON)
-option(USE_RAPIDJSON "Use rapidjson for json parsing" OFF)
-option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" ON)
+option(USE_RAPIDJSON "Use rapidjson for json parsing" ON)
+option(USE_BOOST_JSON_PARSER "Use boost json parser for json parsing" OFF)
 
 # set project root directory
 set(MULTIPLAYER_SERVER_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -38,9 +38,9 @@ message(STATUS "include Boost directories: ${Boost_INCLUDE_DIRS}")
 
 # zlib library is required
 # build zlib library locally, avoid version conflicts
-# add_subdirectory(src/common/zlib)
-# include_directories(${ZLIB_INCLUDE_DIRS})
-# message(STATUS "include zlib directories: ${ZLIB_INCLUDE_DIRS}")
+include(zlib)
+include_directories(${ZLIB_INCLUDE_DIRS})
+message(STATUS "include zlib directories: ${ZLIB_INCLUDE_DIRS}")
 
 # project settings
 include_directories(${MULTIPLAYER_SERVER_ROOT_DIR})
@@ -64,9 +64,9 @@ set(MULTIPLAYER_SERVER_GAME_SRC
 
 if (USE_PROTOBUF)
 	# protobuf is required
-	# include(protobuf)
-	# include_directories(${Protobuf_INCLUDE_DIRS})
-	# message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
+	include(protobuf)
+	include_directories(${Protobuf_INCLUDE_DIRS})
+	message(STATUS "include Protobuf directories: ${Protobuf_INCLUDE_DIRS}")
 endif()
 
 if (USE_FMT)
@@ -99,6 +99,7 @@ endif()
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC} ${MULTIPLAYER_SERVER_GAME_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
+target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIRS})
 if (MSVC)
 	# msvc will link library automated
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
@@ -108,11 +109,14 @@ else()
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 endif()
+
+# link neccessary libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
 add_dependencies(${PROJECT_NAME} Boost)
 
 if (USE_PROTOBUF)
 	# if protobuf is used, link it
-	# target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf protobuf::libprotobuf-lite) # protobuf::libprotoc
+	target_link_libraries(${PROJECT_NAME} PRIVATE protobuf::libprotobuf protobuf::libprotobuf-lite) # protobuf::libprotoc
 endif()
 
 if(USE_FMT)
