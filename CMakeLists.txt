@@ -99,11 +99,10 @@ endif()
 add_executable(${PROJECT_NAME} ${MULTIPLAYER_SERVER_MAJOR_SRCS} ${MULTIPLAYER_SERVER_NETWORK_SRC} ${MULTIPLAYER_SERVER_GAME_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
-target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS} ${ZLIB_LIBRARY_DIRS})
 if (MSVC)
 	# msvc will link library automated
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
-	target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS})
+	target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS} ${ZLIB_INCLUDE_DIRS})
 else()
 	# gcc and clang treat warning as error
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
@@ -112,7 +111,7 @@ endif()
 
 # link neccessary libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
-add_dependencies(${PROJECT_NAME} Boost)
+add_dependencies(${PROJECT_NAME} Boost zlib)
 
 if (USE_PROTOBUF)
 	# if protobuf is used, link it

@@ -26,9 +26,10 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup
-      # Install a system package required by our library
-      run: sudo apt-get update -y && sudo apt-get install -y libboost-all-dev protobuf-compiler libprotobuf-dev libprotoc-dev
+    # build all dependencies locally, so neednot to Setup system environment
+    # - name: Setup
+    #   # Install a system package required by our library
+    #   run: sudo apt-get update -y && sudo apt-get install -y libboost-all-dev protobuf-compiler libprotobuf-dev libprotoc-dev
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
