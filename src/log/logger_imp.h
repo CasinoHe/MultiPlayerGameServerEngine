@@ -34,7 +34,7 @@ namespace multiplayer_server
     LoggerImp(const std::string &tag, const std::string &logfilepath = "", const std::string &config_path = "") : tag_name_(tag), file_path_(logfilepath), config_path_(config_path)
     {
     }
-    ~LoggerImp() {}
+    virtual ~LoggerImp() {}
 
     // Initialize logger
     virtual bool init(const std::string &config_file_path) = 0;

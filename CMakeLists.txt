@@ -10,6 +10,13 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
 endif()
 
+# macos set rpath
+if (APPLE)
+	set(CMAKE_MACOSX_RPATH 1)
+	# set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks")
+	# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
+
 # all options
 option(USE_PROTOBUF "Use protobuf for network communication" ON)
 option(USE_SPDLOG "Use spdlog for logging" ON)
@@ -103,6 +110,14 @@ if (MSVC)
 	# msvc will link library automated
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 	target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS} ${ZLIB_INCLUDE_DIRS})
+elseif(APPLE)
+	# gcc and clang treat warning as error
+	# because of boost lexical stream(use by program_options), so disable treat warning as error
+	# error message boost 1.81.0:
+	#  boost/lexical_cast/detail/converter_lexical_streams.hpp:297:21: error: 'sprintf' is deprecated: This function is provided for compatibility reasons only.  
+	#  Due to security concerns inherent in the design of sprintf(3), it is highly recommended that you use snprintf(3) instead. [-Werror,-Wdeprecated-declarations]
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 else()
 	# gcc and clang treat warning as error
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)

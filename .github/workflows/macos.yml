@@ -23,12 +23,13 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup
-      # Install a system package required by our library
-      run: |
-        brew update
-        brew install boost protobuf
-      # brew upgrade
+    # build all thirdparty libraries locally, so need to install them
+    # - name: Setup
+    #   # Install a system package required by our library
+    #   run: |
+    #     brew update
+    #     brew install boost protobuf
+    #   # brew upgrade
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

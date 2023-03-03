@@ -3,6 +3,10 @@
 # so we build boost using official build script and then use it as a static library
 message(STATUS "Building external project boost from source")
 
+if (POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 # boost version variable
 set(BOOST_MAJOR_VERSION 1)
 set(BOOST_MINOR_VERSION 81)
