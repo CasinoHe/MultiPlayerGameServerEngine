@@ -63,6 +63,8 @@ set(MULTIPLAYER_SERVER_NETWORK_SRC
 )
 set(MULTIPLAYER_SERVER_GAME_SRC
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/entity.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/server_entity.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/client_entity.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/component.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/entity_factory.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/service/login_service.cpp

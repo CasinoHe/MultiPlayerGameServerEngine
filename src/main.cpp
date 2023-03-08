@@ -70,7 +70,7 @@ int main(int argc, const char **argv)
   std::string ip = json_parser->get<std::string>("ip", "127.0.0.1");
   int port = json_parser->get("port", 8080);
 
-  // create game_main object, init login service
+  // create game_main object, init all services
   auto game_main = std::make_unique<GameMain>(ip, port);
   game_main->init_all_game_services();
 
@@ -79,7 +79,7 @@ int main(int argc, const char **argv)
   asio_server->set_io_context_thread_count(10);
 
   // register connected callback
-  std::function<bool(std::shared_ptr<AsioTcpConnection>)> callback = std::bind(&GameMain::on_client_connected<AsioTcpConnection>, game_main.get(), std::placeholders::_1);
+  std::function<bool(std::shared_ptr<Connection>)> callback = std::bind(&GameMain::on_client_connected, game_main.get(), std::placeholders::_1);
   asio_server->register_on_tcp_connection_accepted(callback);
 
   // start asio server

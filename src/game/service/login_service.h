@@ -3,7 +3,7 @@
 // Purpose: implement login service on a game server
 #pragma once
 
-#include "game/basic/entity.h"
+#include "game/basic/server_entity.h"
 
 namespace multiplayer_server
 {
@@ -19,13 +19,8 @@ namespace multiplayer_server
     void update(float dt) override;
     void render() override;
 
-    // since there are varities of connection type, we need to implement callback using temlate
-    template <typename T>
-    bool on_client_connected(std::shared_ptr<T> connection)
-    {
-      std::shared_ptr<T> conn = connection;
-      logger_->debug("LoginService::on_client_connected");
-      return true;
-    }
+    // In spite of the fact that there are varities of connection type
+    // game only need to know the connection is connected and use the abstract connection type
+    bool on_client_connected(std::shared_ptr<Connection> connection);
   };
 }

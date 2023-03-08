@@ -33,9 +33,9 @@ namespace multiplayer_server
     // get game service
     std::shared_ptr<ServerEntity> get_game_service(const std::string &service_name);
 
-    // client connected callback, since there are varities of connection type, we need to implement using template
-    template <typename T>
-    bool on_client_connected(std::shared_ptr<T> connection)
+    // In spide of the fact that there are varities of connection type
+    // game only need to know the connection is connected and use the abstract connection type
+    bool on_client_connected(std::shared_ptr<Connection> connection)
     {
       // get login service
       std::shared_ptr<LoginService> login_service = std::dynamic_pointer_cast<LoginService>(get_game_service("LoginService"));

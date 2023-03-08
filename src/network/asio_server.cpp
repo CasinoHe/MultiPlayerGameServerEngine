@@ -118,9 +118,9 @@ namespace multiplayer_server
       start_tcp_accept();
 
       // give connection to game logic module
-      if (on_tcp_connection_accepted_callback_)
+      if (on_connection_accepted_callback_)
       {
-        if (on_tcp_connection_accepted_callback_(connection))
+        if (on_connection_accepted_callback_(std::static_pointer_cast<Connection>(connection)))
         {
           // start read
           connection->start_receive();
