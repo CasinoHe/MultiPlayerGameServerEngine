@@ -54,7 +54,7 @@ include_directories(${MULTIPLAYER_SERVER_ROOT_DIR})
 set(MULTIPLAYER_SERVER_MAJOR_SRCS 
 	${MULTIPLAYER_SERVER_ROOT_DIR}/main.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/config/arg_parser.cpp
-	${MULTIPLAYER_SERVER_ROOT_DIR}/config/json_config_parser.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/config/game_config.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/log/logger_manager.cpp
 )
 set(MULTIPLAYER_SERVER_NETWORK_SRC

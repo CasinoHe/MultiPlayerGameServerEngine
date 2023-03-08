@@ -14,12 +14,12 @@ namespace multiplayer_server
   class SpdlogLoggerImp : public LoggerImp
   {
   public:
-    SpdlogLoggerImp(const std::string &logger_name, const std::string& logpath = "", const std::string &configpath = "");
+    SpdlogLoggerImp(const std::string &logger_name, const std::string& logpath = "", LoggerImp::config_type config = nullptr);
     virtual ~SpdlogLoggerImp();
 
     // Initialize logger
-    bool init(const std::string &config_file_path) override;
-    bool read_config(const std::string &config_file_path);
+    bool init() override;
+    bool read_config();
 
     // set log level
     void set_level(LoggerLevel level) override;

@@ -12,11 +12,7 @@ namespace multiplayer_server
 {
   // forward declaration for entity
   class Entity;
-  class EntityFactory;
   class UUID;
-
-  // global access for entity factory instance
-  extern EntityFactory& g_entity_factory;
 
   // entity factory is a singleton
   // final class

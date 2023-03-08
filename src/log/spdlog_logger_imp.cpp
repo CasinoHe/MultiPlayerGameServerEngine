@@ -2,91 +2,138 @@
 #include "spdlog/sinks/stdout_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
-#include "config/json_config_parser.h"
 #ifdef USE_FMT
 #include <fmt/core.h>
 #include <fmt/chrono.h>
 #include <fmt/ranges.h>
 #endif
-#include <filesystem>
 #include <string>
 #include <map>
 #include <iostream>
 
 namespace multiplayer_server
 {
-  SpdlogLoggerImp::SpdlogLoggerImp(const std::string &tagname, const std::string &log_path, const std::string &config_file_path) : LoggerImp(tagname, log_path, config_file_path)
+  SpdlogLoggerImp::SpdlogLoggerImp(const std::string &tagname, const std::string &log_path, LoggerImp::config_type config) : LoggerImp(tagname, log_path, config)
   {
-    init(config_file_path);
+    init();
   }
 
   SpdlogLoggerImp::~SpdlogLoggerImp()
   {
   }
 
-  bool SpdlogLoggerImp::read_config(const std::string &config_file_path)
+  bool SpdlogLoggerImp::read_config()
   {
-    // check config file path
-    if (!std::filesystem::exists(config_file_path))
-    {
-      return false;
-    }
-
-    JsonConfigParser parser(config_file_path);
-    if (!parser.parse())
+    // check config exists or not
+    if (!config_)
     {
       return false;
     }
 
     // get log time
-    need_log_time_ = parser.get<bool>("log_time", true);
+    auto iter = config_->find("log_time");
+    if (iter != config_->end())
+    {
+      need_log_time_ = std::get<bool>(iter->second);
+    }
 
     // get log thread
-    need_log_thread_ = parser.get<bool>("log_thread", true);
+    iter = config_->find("log_thread");
+    if (iter != config_->end())
+    {
+      need_log_thread_ = std::get<bool>(iter->second);
+    }
 
     // get log level
-    need_log_level_ = parser.get<bool>("log_level", true);
+    iter = config_->find("log_level");
+    if (iter != config_->end())
+    {
+      need_log_level_ = std::get<bool>(iter->second);
+    }
 
     // get_log_source
-    need_log_source_ = parser.get<bool>("log_source", true);
+    iter = config_->find("log_source");
+    if (iter != config_->end())
+    {
+      need_log_source_ = std::get<bool>(iter->second);
+    }
 
     // get log line
-    need_log_line_ = parser.get<bool>("log_line", true);
+    iter = config_->find("log_line");
+    if (iter != config_->end())
+    {
+      need_log_line_ = std::get<bool>(iter->second);
+    }
 
     // get log function name
-    need_log_funcname_ = parser.get<bool>("log_funcname", true);
+    iter = config_->find("log_funcname");
+    if (iter != config_->end())
+    {
+      need_log_funcname_ = std::get<bool>(iter->second);
+    }
 
     // get log level
-    std::string level = parser.get<std::string>("level", "off");
-    std::map<std::string, LoggerLevel> level_map = {
-      {"debug", LoggerLevel::Debug},
-      {"info", LoggerLevel::Info},
-      {"warn", LoggerLevel::Warn},
-      {"error", LoggerLevel::Error},
-      {"critical", LoggerLevel::Critical}
-    };
-    if (level_map.find(level) != level_map.end())
+    iter = config_->find("level");
+    if (iter != config_->end())
     {
-      level_ = level_map[level];
+      std::string level = std::get<std::string>(iter->second);
+      std::map<std::string, LoggerLevel> level_map = {
+        {"debug", LoggerLevel::Debug},
+        {"info", LoggerLevel::Info},
+        {"warn", LoggerLevel::Warn},
+        {"error", LoggerLevel::Error},
+        {"critical", LoggerLevel::Critical}
+      };
+      if (level_map.find(level) != level_map.end())
+      {
+        level_ = level_map[level];
+      }
     }
 
     // get log tag name
-    tag_name_ = parser.get<std::string>("log_tag_name", "major");
+    iter = config_->find("log_tag_name");
+    if (iter != config_->end())
+    {
+      tag_name_ = std::get<std::string>(iter->second);
+    }
 
     // get log file max size
-    log_file_size_ = parser.get<size_t>("log_file_max_size", 0);
+    iter = config_->find("log_file_max_size");
+    if (iter != config_->end())
+    {
+      log_file_size_ = std::get<size_t>(iter->second);
+    }
 
     // get log file max number
-    log_file_cnt_ = parser.get<size_t>("log_file_max_number", 3);
+    iter = config_->find("log_file_max_number");
+    if (iter != config_->end())
+    {
+      log_file_cnt_ = std::get<size_t>(iter->second);
+    }
 
     // get log file name
-    std::string log_file_name = parser.get<std::string>("log_file_name", "");
+    iter = config_->find("log_file_name");
+    std::string log_file_name("");
+    if (iter != config_->end())
+    {
+      log_file_name = std::get<std::string>(iter->second);
+    }
 
     // get log file dir
-    std::string log_file_dir = parser.get<std::string>("log_file_dir", "");
+    iter = config_->find("log_file_dir");
+    std::string log_file_dir("");
+    if (iter != config_->end())
+    {
+      log_file_dir = std::get<std::string>(iter->second);
+    }
 
     // get log file extension
-    std::string log_file_extension = parser.get<std::string>("log_file_extension", "");
+    iter = config_->find("log_file_extension");
+    std::string log_file_extension;
+    if (iter != config_->end())
+    {
+      log_file_extension = std::get<std::string>(iter->second);
+    }
 
     // get log file full path
     if (!log_file_name.empty())
@@ -99,17 +146,25 @@ namespace multiplayer_server
     }
 
     // get log console
-    // bool log_console = parser.get<bool>("log_console", true);
+    // iter = config_->find("log_console");
+    // if (iter != config_->end())
+    // {
+    //   need_log_console_ = std::get<bool>(iter->second);
+    // }
 
     // get log console color
-    // bool log_console_color = parser.get<bool>("log_console_color", true);
+    // iter = config_->find("log_console_color");
+    // if (iter != config_->end())
+    // {
+    //   need_log_console_color_ = std::get<bool>(iter->second);
+    // }
 
     return true;
   }
 
-  bool SpdlogLoggerImp::init(const std::string &config_file_path)
+  bool SpdlogLoggerImp::init()
   {
-    read_config(config_file_path);
+    read_config();
 
     std::string pattern("");
 

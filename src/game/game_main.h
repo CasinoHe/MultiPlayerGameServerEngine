@@ -1,23 +1,26 @@
 // Created: 2023.02.22
 // Author: CasinoHe
 // Purpose: record global services
-#include "game/service/login_service.h"
 #pragma once
+
+#include "game/basic/entity_factory.h"
 #include <map>
 #include <string>
 #include <memory>
 #include <functional>
+#include <tuple>
 
 namespace multiplayer_server
 {
   class ServerEntity;
   class Connection;
+  class GameConfig;
 
   // global game interfaces and data
   class GameMain
   {
   public:
-    GameMain(const std::string &ip, int port);
+    GameMain(const std::string &config_file_path);
     ~GameMain();
 
     // non-copyable
@@ -35,16 +38,16 @@ namespace multiplayer_server
 
     // In spide of the fact that there are varities of connection type
     // game only need to know the connection is connected and use the abstract connection type
-    bool on_client_connected(std::shared_ptr<Connection> connection)
-    {
-      // get login service
-      std::shared_ptr<LoginService> login_service = std::dynamic_pointer_cast<LoginService>(get_game_service("LoginService"));
-      if (login_service)
-      {
-        return login_service->on_client_connected(connection);
-      }
-      return false;
-    }
+    bool on_client_connected(std::shared_ptr<Connection> connection);
+
+    // return game ip and port
+    std::string get_ip() const { return ip_; }
+    int get_port() const { return port_; }
+    // return ip and port as tuple
+    std::tuple<std::string, int> get_ip_port() const { return std::make_tuple(ip_, port_); }
+
+    // create a new login entity using the data read from config file
+    std::shared_ptr<ServerEntity> create_login_entity();
 
   private:
     // init a game service
@@ -53,8 +56,15 @@ namespace multiplayer_server
   private:
     // all game services
     std::map<std::string, std::shared_ptr<ServerEntity>> game_services_;
+
     // save ip and port
-    std::string ip_;
-    int port_;
+    std::string ip_ = "127.0.0.1";
+    int port_ = 8080;
+
+    // game config file parser
+    std::shared_ptr<GameConfig> game_config_;
+
+    // game entity factory
+    EntityFactory& entity_factory_ = EntityFactory::get_instance();
   };
 }

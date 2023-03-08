@@ -1,5 +1,4 @@
 #include "config/arg_parser.h"
-#include "config/json_config_parser.h"
 #include "log/logger.h"
 #include "network/asio_server.h"
 #include "game/game_main.h"
@@ -9,6 +8,10 @@
 #include <thread>
 #include <functional>
 
+// except g_logger and g_logger_manager, there is no global instance
+// all other game objects are created in game_main object, Reason:
+// 1. avoid using global instance, it is not thread safe
+// 2. reduce the difficulty of maintaining the code, especially when we need init some objects in a specific order
 int check_config_file(const std::string &config_file_path)
 {
   using namespace multiplayer_server;
@@ -60,21 +63,12 @@ int main(int argc, const char **argv)
     return EXIT_FAILURE;
   }
 
-  // get config value, especially for ip and port
-  auto json_parser = std::make_unique<JsonConfigParser>(config_file_path);
-  if (!json_parser->parse())
-  {
-    return EXIT_FAILURE;
-  }
-
-  std::string ip = json_parser->get<std::string>("ip", "127.0.0.1");
-  int port = json_parser->get("port", 8080);
-
   // create game_main object, init all services
-  auto game_main = std::make_unique<GameMain>(ip, port);
+  auto game_main = std::make_unique<GameMain>(config_file_path);
   game_main->init_all_game_services();
 
   // create asio server
+  const auto [ip, port] = game_main->get_ip_port();
   auto asio_server = std::make_unique<AsioServer>(ip, port, true, false);
   asio_server->set_io_context_thread_count(10);
 

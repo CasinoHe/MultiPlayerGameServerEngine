@@ -1,0 +1,13 @@
+{
+	"server": {
+		"ip": "0.0.0.0",
+		"port": 52500
+	},
+	"login_entity": {
+		"entity": "ServerEntity",
+		"entity_type": "kPlayerEntity",
+		"components": [
+
+		]
+	}
+}

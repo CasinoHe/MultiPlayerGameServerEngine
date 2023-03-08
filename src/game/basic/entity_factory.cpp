@@ -4,9 +4,6 @@
 
 namespace multiplayer_server
 {
-  // global access for entity factory instance
-  EntityFactory& g_entity_factory = EntityFactory::get_instance();
-
   EntityFactory::EntityFactory()
   {
     entities_.clear();

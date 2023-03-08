@@ -15,6 +15,9 @@
 #else
 #include <format>
 #endif
+#include <map>
+#include <variant>
+#include <memory>
 
 namespace multiplayer_server
 {
@@ -31,13 +34,15 @@ namespace multiplayer_server
   class LoggerImp
   {
   public:
-    LoggerImp(const std::string &tag, const std::string &logfilepath = "", const std::string &config_path = "") : tag_name_(tag), file_path_(logfilepath), config_path_(config_path)
+    using config_type = std::shared_ptr<std::map<std::string, std::variant<int, bool, size_t, std::string>>>;
+
+    LoggerImp(const std::string &tag, const std::string &logfilepath = "", config_type config = nullptr) : tag_name_(tag), file_path_(logfilepath), config_(config)
     {
     }
     virtual ~LoggerImp() {}
 
     // Initialize logger
-    virtual bool init(const std::string &config_file_path) = 0;
+    virtual bool init() = 0;
 
     // set logger level
     virtual void set_level(LoggerLevel level) { level_ = level; } 
@@ -96,6 +101,6 @@ namespace multiplayer_server
     std::string tag_name_ = "major"; // Log tag
     LoggerLevel level_ = LoggerLevel::Debug;
     std::string file_path_ = ""; // Log file name
-    std::string config_path_ = ""; // log config file path
+    config_type config_ = nullptr; // Log configuration 
   };
 }
