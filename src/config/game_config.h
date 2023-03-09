@@ -65,6 +65,7 @@ namespace multiplayer_server
     void load_server_config(const JsonTree &tree);
     // load game logger config data, including log level, log file path...
     void load_logger_config(const JsonTree &tree);
+    void load_single_logger_config(const JsonNode &node);
 
   private:
     // config node

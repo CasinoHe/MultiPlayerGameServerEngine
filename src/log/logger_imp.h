@@ -34,7 +34,8 @@ namespace multiplayer_server
   class LoggerImp
   {
   public:
-    using config_type = std::shared_ptr<std::map<std::string, std::variant<int, bool, size_t, std::string>>>;
+    using config_map_type = std::map<std::string, std::variant<int, bool, size_t, std::string>>;
+    using config_type = std::shared_ptr<config_map_type>;
 
     LoggerImp(const std::string &tag, const std::string &logfilepath = "", config_type config = nullptr) : tag_name_(tag), file_path_(logfilepath), config_(config)
     {

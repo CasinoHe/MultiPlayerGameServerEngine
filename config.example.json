@@ -9,5 +9,17 @@
 		"components": [
 
 		]
-	}
+	},
+	"logger": [
+		{
+			"name": "main_log",
+			"file": "log/main.log",
+			"level": "debug"
+		},
+		{
+			"name": "config_log",
+			"file": "log/config.log",
+			"level": "debug"
+		}
+	]
 }

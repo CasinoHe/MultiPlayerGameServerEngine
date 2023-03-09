@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <tuple>
+#include <optional>
 
 #define SERVER_CONFIG_STR "server"
 #define LOG_CONFIG_STR "logger"
@@ -119,13 +120,7 @@ namespace multiplayer_server
 #endif
 
     // second, check the type of server config
-#ifdef USE_BOOST_JSON_PARSER
-    if (!config_tree[SERVER_CONFIG_STR].is_object())
-    {
-      logger_->error("server config is not a object");
-      return;
-    }
-#elif USE_RAPIDJSON
+#ifdef USE_RAPIDJSON
     if (!config_tree[SERVER_CONFIG_STR].IsObject())
     {
       logger_->error("server config is not a object");
@@ -145,12 +140,6 @@ namespace multiplayer_server
     if (server_config.find("ip") == server_config.not_found())
     {
       logger_->error("server ip not exist");
-      return;
-    }
-
-    if (!server_config.get_child("ip").is_data())
-    {
-      logger_->error("server ip is not a string");
       return;
     }
 
@@ -176,12 +165,6 @@ namespace multiplayer_server
     if (server_config.find("port") == server_config.not_found())
     {
       logger_->error("server port not exist");
-      return;
-    }
-
-    if (!server_config.get_child("port").is_data())
-    {
-      logger_->error("server port is not a number");
       return;
     }
 
@@ -215,15 +198,144 @@ namespace multiplayer_server
 #ifdef USE_BOOST_JSON_PARSER
     if (config_tree.find(LOG_CONFIG_STR) == config_tree.not_found())
     {
-      logger_->error("server config not exist");
+      logger_->error("logger config not exist");
       return;
     }
+
+    const JsonNode &logger_config = config_tree.get_child(LOG_CONFIG_STR);
 #elif USE_RAPIDJSON
     if (!config_tree.HasMember(LOG_CONFIG_STR))
     {
-      logger_->error("server config not exist");
+      logger_->error("logger config not exist");
       return;
     }
+    const JsonNode &logger_config = config_tree[LOG_CONFIG_STR];
 #endif
+
+    // logger config is a two layers json object, example:
+    //   
+    // "logger": [
+    // 	{
+    // 		"name": "main_log",
+    // 		"file": "log/main.log",
+    // 		"level": "debug"
+    // 	},
+    // 	{
+    // 		"name": "config_log",
+    // 		"file": "log/config.log",
+    // 		"level": "debug"
+    // 	}
+    // ]
+
+    // traverse the entire list logger config
+#ifdef USE_BOOST_JSON_PARSER
+    for (const auto &logger : logger_config)
+    {
+      load_single_logger_config(logger.second);
+    }
+#elif USE_RAPIDJSON
+    for (const auto &logger : logger_config.GetArray())
+    {
+      load_single_logger_config(logger);
+    }
+#endif
+  }
+
+  void GameConfig::load_single_logger_config(const JsonNode &logger)
+  {
+#ifdef USE_BOOST_JSON_PARSER
+    // load logger name
+    if (logger.find("name") != logger.not_found())
+    {
+      logger_->error("logger name not exist");
+      return;
+    }
+
+    std::string logger_name = logger.get<std::string>("name");
+#elif USE_RAPIDJSON
+    // check if logger is a object
+    if (!logger.IsObject())
+    {
+      logger_->error("logger is not a object");
+      return;
+    }
+
+    // load logger name
+    if (!logger.HasMember("name"))
+    {
+      logger_->error("logger name not exist");
+      return;
+    }
+
+    if (!logger["name"].IsString())
+    {
+      logger_->error("logger name is not a string");
+      return;
+    }
+
+    std::string logger_name = logger["name"].GetString();
+#endif
+
+    if (logger_name.empty())
+    {
+      logger_->error("logger name is empty");
+      return;
+    }
+
+    auto data_ptr = std::make_shared<LoggerImp::config_map_type>();
+
+#ifdef USE_BOOST_JSON_PARSER
+    // load logger file
+    if (logger.find("log_time") != logger.not_found())
+    {
+      logger_->error("cannt find logger log_time");
+      return;
+    }
+
+    auto logger_file = logger.get<std::string>("file");
+
+    // load logger level
+    if (logger.find("level") == logger.not_found())
+    {
+      logger_->error("logger level not exist");
+      return;
+    }
+
+    auto logger_level = logger.get<std::string>("level");
+#elif USE_RAPIDJSON
+
+    // load logger file
+    if (!logger.HasMember("file"))
+    {
+      logger_->error("logger file not exist");
+      return;
+    }
+
+    if (!logger["file"].IsString())
+    {
+      logger_->error("logger file is not a string");
+      return;
+    }
+
+    auto logger_file = logger["file"].GetString();
+
+    // load logger level
+    if (!logger.HasMember("level"))
+    {
+      logger_->error("logger level not exist");
+      return;
+    }
+
+    if (!logger["level"].IsString())
+    {
+      logger_->error("logger level is not a string");
+      return;
+    }
+
+    auto logger_level = logger["level"].GetString();
+#endif
+
+    // insert data ptr into config_ to store logger config
+    config_[logger_name] = std::static_pointer_cast<void>(data_ptr);
   }
 }
