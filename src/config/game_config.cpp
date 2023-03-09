@@ -245,7 +245,7 @@ namespace multiplayer_server
   {
 #ifdef USE_BOOST_JSON_PARSER
     // load logger name
-    if (logger.find("name") != logger.not_found())
+    if (logger.find("name") == logger.not_found())
     {
       logger_->error("logger name not exist");
       return;
@@ -285,54 +285,161 @@ namespace multiplayer_server
     auto data_ptr = std::make_shared<LoggerImp::config_map_type>();
 
 #ifdef USE_BOOST_JSON_PARSER
-    // load logger file
+    // if logger time
     if (logger.find("log_time") != logger.not_found())
     {
-      logger_->error("cannt find logger log_time");
-      return;
+      data_ptr->emplace("log_time", logger.get<bool>("log_time"));
     }
 
-    auto logger_file = logger.get<std::string>("file");
-
-    // load logger level
-    if (logger.find("level") == logger.not_found())
+    // if logger thread
+    if (logger.find("log_thread") != logger.not_found())
     {
-      logger_->error("logger level not exist");
-      return;
+      data_ptr->emplace("log_thread", logger.get<bool>("log_thread"));
     }
 
-    auto logger_level = logger.get<std::string>("level");
+    // if logger log_level
+    if (logger.find("log_level") != logger.not_found())
+    {
+      data_ptr->emplace("log_level", logger.get<bool>("log_level"));
+    }
+
+    // if logger log_source
+    if (logger.find("log_source") != logger.not_found())
+    {
+      data_ptr->emplace("log_source", logger.get<bool>("log_source"));
+    }
+
+    // if logger log_line
+    if (logger.find("log_line") != logger.not_found())
+    {
+      data_ptr->emplace("log_line", logger.get<bool>("log_line"));
+    }
+
+    // if logger log_funcname
+    if (logger.find("log_funcname") != logger.not_found())
+    {
+      data_ptr->emplace("log_funcname", logger.get<bool>("log_funcname"));
+    }
+
+    // if logger tag_name
+    if (logger.find("log_tag_name") != logger.not_found())
+    {
+      data_ptr->emplace("log_tag_name", logger.get<std::string>("log_tag_name"));
+    }
+
+    // if logger level
+    if (logger.find("level") != logger.not_found())
+    {
+      data_ptr->emplace("level", logger.get<std::string>("level"));
+    }
+
+    // get log_file_max_size
+    if (logger.find("log_file_max_size") != logger.not_found())
+    {
+      data_ptr->emplace("log_file_max_size", logger.get<size_t>("log_file_max_size"));
+    }
+
+    // log_file_max_number
+    if (logger.find("log_file_max_number") != logger.not_found())
+    {
+      data_ptr->emplace("log_file_max_number", logger.get<size_t>("log_file_max_number"));
+    }
+
+    // get log_file_name
+    if (logger.find("log_file_name") != logger.not_found())
+    {
+      data_ptr->emplace("log_file_name", logger.get<std::string>("log_file_name"));
+    }
+    // get log_file_dir
+    if (logger.find("log_file_dir") != logger.not_found())
+    {
+      data_ptr->emplace("log_file_dir", logger.get<std::string>("log_file_dir"));
+    }
+    // get log_file_extension
+    if (logger.find("log_file_extension") != logger.not_found())
+    {
+      data_ptr->emplace("log_file_extension", logger.get<std::string>("log_file_extension"));
+    }
+
 #elif USE_RAPIDJSON
-
-    // load logger file
-    if (!logger.HasMember("file"))
+    // if logger time
+    if (logger.HasMember("log_time") && logger["log_time"].IsBool())
     {
-      logger_->error("logger file not exist");
-      return;
+      data_ptr->emplace("log_time", logger["log_time"].GetBool());
     }
 
-    if (!logger["file"].IsString())
+    // if log thread
+    if (logger.HasMember("log_thread") && logger["log_thread"].IsBool())
     {
-      logger_->error("logger file is not a string");
-      return;
+      data_ptr->emplace("log_thread", logger["log_thread"].GetBool());
     }
 
-    auto logger_file = logger["file"].GetString();
-
-    // load logger level
-    if (!logger.HasMember("level"))
+    // if log log_level
+    if (logger.HasMember("log_level") && logger["log_level"].IsBool())
     {
-      logger_->error("logger level not exist");
-      return;
+      data_ptr->emplace("log_level", logger["log_level"].GetBool());
     }
 
-    if (!logger["level"].IsString())
+    // if log log_source
+    if (logger.HasMember("log_source") && logger["log_source"].IsBool())
     {
-      logger_->error("logger level is not a string");
-      return;
+      data_ptr->emplace("log_source", logger["log_source"].GetBool());
     }
 
-    auto logger_level = logger["level"].GetString();
+    // if log log_line
+    if (logger.HasMember("log_line") && logger["log_line"].IsBool())
+    {
+      data_ptr->emplace("log_line", logger["log_line"].GetBool());
+    }
+    
+    // if log funcname
+    if (logger.HasMember("log_funcname") && logger["log_funcname"].IsBool())
+    {
+      data_ptr->emplace("log_funcname", logger["log_funcname"].GetBool());
+    }
+
+    // get level
+    if (logger.HasMember("level") && logger["level"].IsString())
+    {
+      data_ptr->emplace("level", logger["level"].GetString());
+    }
+
+    // get log_tag_name
+    if (logger.HasMember("log_tag_name") && logger["log_tag_name"].IsString())
+    {
+      data_ptr->emplace("log_tag_name", logger["log_tag_name"].GetString());
+    }
+
+    // get log_file_max_size
+    if (logger.HasMember("log_file_max_size") && logger["log_file_max_size"].IsInt())
+    {
+      data_ptr->emplace("log_file_max_size", static_cast<size_t>(logger["log_file_max_size"].GetUint()));
+    }
+    
+    // get log_file_max_number
+    if (logger.HasMember("log_file_max_number") && logger["log_file_max_number"].IsInt())
+    {
+      data_ptr->emplace("log_file_max_number", static_cast<size_t>(logger["log_file_max_number"].GetUint()));
+    }
+
+    // get log_file_name
+    if (logger.HasMember("log_file_name") && logger["log_file_name"].IsString())
+    {
+      data_ptr->emplace("log_file_name", logger["log_file_name"].GetString());
+    }
+
+    // get log_file_dir
+    if (logger.HasMember("log_file_dir") && logger["log_file_dir"].IsString())
+    {
+      data_ptr->emplace("log_file_dir", logger["log_file_dir"].GetString());
+    }
+
+    // get log_file_extension
+    if (logger.HasMember("log_file_extension") && logger["log_file_extension"].IsString())
+    {
+      data_ptr->emplace("log_file_extension", logger["log_file_extension"].GetString());
+    }
+
 #endif
 
     // insert data ptr into config_ to store logger config

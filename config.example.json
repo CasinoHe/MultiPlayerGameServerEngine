@@ -13,13 +13,24 @@
 	"logger": [
 		{
 			"name": "main_log",
-			"file": "log/main.log",
-			"level": "debug"
+			"log_time": true,
+			"log_thread": true,
+			"log_level": true,
+			"log_source": false,
+			"log_line": false,
+			"log_funcname": false,
+			"log_tag_name": "main_log",
+			"level": "debug",
+			"log_file_max_size": 102400,
+			"log_file_max_number": 3,
+			"log_file_name": "main",
+			"log_file_dir": "log",
+			"log_file_extension": "log"
 		},
 		{
 			"name": "config_log",
-			"file": "log/config.log",
-			"level": "debug"
+			"level": "debug",
+			"log_tag_name": "config"
 		}
 	]
 }
