@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "component.h"
+#include "game/component/network_component.h"
 
 namespace multiplayer_server
 {
@@ -45,6 +46,19 @@ namespace multiplayer_server
     for (auto it = components_.begin(); it != components_.end(); ++it)
     {
       it->second->render();
+    }
+  }
+
+  // init component from config using std::vector<std::string> as name list
+  void Entity::init_components(const std::vector<std::string>& names)
+  {
+    for (auto it = names.begin(); it != names.end(); ++it)
+    {
+      std::string name = *it;
+      if (name == "NetworkComponent")
+      {
+        add_component<NetworkComponent>();
+      }
     }
   }
 }

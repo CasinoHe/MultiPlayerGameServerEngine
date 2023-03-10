@@ -9,6 +9,7 @@
 #include <memory>
 #include <functional>
 #include <tuple>
+#include <list>
 
 namespace multiplayer_server
 {
@@ -35,6 +36,8 @@ namespace multiplayer_server
 
     // get game service
     std::shared_ptr<ServerEntity> get_game_service(const std::string &service_name);
+    std::shared_ptr<ServerEntity> get_game_service(const std::string &service_name, const std::string &id);
+    std::shared_ptr<ServerEntity> get_local_game_service(const std::string &service_name);
 
     // In spide of the fact that there are varities of connection type
     // game only need to know the connection is connected and use the abstract connection type
@@ -46,17 +49,14 @@ namespace multiplayer_server
     // return ip and port as tuple
     std::tuple<std::string, int> get_ip_port() const { return std::make_tuple(ip_, port_); }
 
-    // create a new login entity using the data read from config file
-    std::shared_ptr<ServerEntity> create_login_entity();
+    // get game config shared_ptr
+    std::shared_ptr<GameConfig> get_game_config() const { return game_config_; }
 
   private:
     // init a game service
     void init_game_service(const std::string &name);
 
   private:
-    // all game services
-    std::map<std::string, std::shared_ptr<ServerEntity>> game_services_;
-
     // save ip and port
     std::string ip_ = "127.0.0.1";
     int port_ = 8080;
@@ -66,5 +66,8 @@ namespace multiplayer_server
 
     // game entity factory
     EntityFactory& entity_factory_ = EntityFactory::get_instance();
+
+    // save all services, maybe not in a same process
+    std::map<std::string, std::list<std::shared_ptr<ServerEntity>>> game_services_;
   };
 }

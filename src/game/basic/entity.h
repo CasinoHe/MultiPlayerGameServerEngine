@@ -7,11 +7,70 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
 
 namespace multiplayer_server
 {
   // forward declaration
   class Component;
+
+  // use ip, port, entityid to identify the proxy of a  server entity
+  class EntityProxy
+  {
+  public:
+    std::string ip_ = "";
+    int port_ = 0;
+    std::string entity_id_ = "";
+
+    EntityProxy(std::shared_ptr<LoggerImp> logger = g_logger) : logger_(logger) {}
+
+    // get the string of the position
+    std::string get_pos() const
+    {
+      return ip_ + "_" + std::to_string(port_) + "_" + entity_id_;
+    }
+
+    // get ip
+    const std::string &get_ip() const { return ip_; }
+
+    // get port
+    int get_port() const { return port_; }
+
+    // parse the string to ServerEntityPos
+    [[nodiscard]] bool parse_pos(const std::string &pos)
+    {
+      try
+      {
+        auto pos1 = pos.find("_");
+        auto pos2 = pos.rfind("_");
+        ip_ = pos.substr(0, pos1);
+        port_ = std::stoi(pos.substr(pos1 + 1, pos2 - pos1 - 1));
+        entity_id_ = pos.substr(pos2 + 1);
+        validate = true;
+        return true;
+      }
+      catch (const std::exception &e)
+      {
+        logger_->error("ServerEntityPos::parse_pos error: {}", e.what());
+        return false;
+      }
+    }
+
+    void set_proxy(const std::string &id, const std::string &ip, int port)
+    {
+      this->entity_id_ = id;
+      this->ip_ = ip;
+      this->port_ = port;
+      validate = true;
+    }
+
+    // get valid
+    bool is_valid() const { return validate; }
+
+  private:
+    std::shared_ptr<LoggerImp> logger_ = nullptr;
+    bool validate = false;        // if the pos is valid
+  };
 
   // abstract base class for all entities
   // define the base interface
@@ -41,6 +100,9 @@ namespace multiplayer_server
 
     // call before destruct
     virtual void before_destruct() { delete_all_components(); }
+
+    // init component from config using std::vector<std::string> as name list
+    virtual void init_components(const std::vector<std::string> &names);
 
     // get component by type 
     template<typename T>
@@ -136,57 +198,5 @@ namespace multiplayer_server
     
     // logger object
     std::shared_ptr<LoggerImp> logger_ = nullptr;
-  };
-
-  // use ip, port, entityid to identify the proxy of a  server entity
-  class EntityProxy
-  {
-  public:
-    std::string ip_ = "";
-    int port_ = 0;
-    std::string entity_id_ = "";
-
-    EntityProxy(std::shared_ptr<LoggerImp> logger = g_logger) : logger_(logger) {}
-
-    // get the string of the position
-    std::string get_pos() const
-    {
-      return ip_ + "_" + std::to_string(port_) + "_" + entity_id_;
-    }
-
-    // parse the string to ServerEntityPos
-    [[nodiscard]] bool parse_pos(const std::string &pos)
-    {
-      try
-      {
-        auto pos1 = pos.find("_");
-        auto pos2 = pos.rfind("_");
-        ip_ = pos.substr(0, pos1);
-        port_ = std::stoi(pos.substr(pos1 + 1, pos2 - pos1 - 1));
-        entity_id_ = pos.substr(pos2 + 1);
-        validate = true;
-        return true;
-      }
-      catch (const std::exception &e)
-      {
-        logger_->error("ServerEntityPos::parse_pos error: {}", e.what());
-        return false;
-      }
-    }
-
-    void set_proxy(const std::string &id, const std::string &ip, int port)
-    {
-      this->entity_id_ = id;
-      this->ip_ = ip;
-      this->port_ = port;
-      validate = true;
-    }
-
-    // get valid
-    bool is_valid() const { return validate; }
-
-  private:
-    std::shared_ptr<LoggerImp> logger_ = nullptr;
-    bool validate = false;        // if the pos is valid
   };
 }

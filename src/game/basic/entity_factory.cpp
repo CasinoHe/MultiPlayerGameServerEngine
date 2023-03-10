@@ -20,4 +20,10 @@ namespace multiplayer_server
     static EntityFactory instance;
     return instance;
   }
+
+  // generate new unique id
+  std::string EntityFactory::generate_id()
+  {
+    return uuid_->get();
+  }
 }

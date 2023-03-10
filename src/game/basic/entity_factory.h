@@ -28,6 +28,9 @@ namespace multiplayer_server
     // get entity by id
     std::shared_ptr<Entity> get_entity(const std::string& id);
 
+    // generate unique id
+    std::string generate_id();
+
     // template function, create a new entity with template type
     template <typename T, typename ...Args>
     std::shared_ptr<T> create_entity(Args... args)
@@ -35,9 +38,17 @@ namespace multiplayer_server
       // check the type of T, must be derived from Entity
       static_assert(std::is_base_of<Entity, T>::value, "T must be derived from Entity");
 
+      // get a unique id
+      std::string id(generate_id());
+
       // create entity and forward the args
-      std::shared_ptr<T> entity = std::make_shared<T>(std::forward<Args>(args)...);
-      entities_.emplace(entity->get_id(), entity);
+      std::shared_ptr<T> entity = std::make_shared<T>(id, std::forward<Args>(args)...);
+      if (!entity)
+      {
+        return nullptr;
+      }
+
+      entities_.emplace(id, entity);
 
       // TODO: register entity to a global entity manager, especially for a huge number of server processes
       return entity;

@@ -39,13 +39,16 @@ namespace multiplayer_server
     // get server type
     ServerEntityType get_server_type() const { return type_; }
     // get server proxy
-    const EntityProxy &get_proxy() const { return proxy_; }
+    const std::shared_ptr<EntityProxy> &get_proxy() const { return proxy_; }
+
+    // if this entity is a local entity
+    bool is_local(const std::string &ip, int port);
 
   protected:
-    // server proxy, which server this entity belongs to
-    EntityProxy proxy_;
-
     // server entity type
     ServerEntityType type_ = ServerEntityType::kServiceEntity;
+
+    // proxy of the entity, use shared_ptr to avoid the entity destruct before the proxy
+    std::shared_ptr<EntityProxy> proxy_ = nullptr;
   };
 }

@@ -69,6 +69,7 @@ set(MULTIPLAYER_SERVER_GAME_SRC
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/basic/entity_factory.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/service/login_service.cpp
 	${MULTIPLAYER_SERVER_ROOT_DIR}/game/game_main.cpp
+	${MULTIPLAYER_SERVER_ROOT_DIR}/game/component/network_component.cpp
 )
 
 if (USE_PROTOBUF)

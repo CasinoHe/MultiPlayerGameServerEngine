@@ -24,10 +24,12 @@ namespace multiplayer_server
 
     ~UUID() {}
 
-    // use operator() to get the id
-    std::string &operator()()
+    // generate next id and return current id
+    std::string &get()
     {
-      return id_;
+      auto &old = id_;
+      id_ = boost::uuids::to_string(generator_());
+      return old;
     }
 
   private:

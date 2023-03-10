@@ -5,9 +5,6 @@
 #include <tuple>
 #include <optional>
 
-#define SERVER_CONFIG_STR "server"
-#define LOG_CONFIG_STR "logger"
-
 namespace multiplayer_server
 {
   GameConfig::GameConfig(const std::string &config_file_path)
@@ -98,6 +95,7 @@ namespace multiplayer_server
     // then, call every load function to load data from config file
     load_server_config(config_tree);
     load_logger_config(config_tree);
+    load_login_config(config_tree);
   }
 
   // load server config
@@ -187,7 +185,7 @@ namespace multiplayer_server
 
     // make a shared_ptr of tuple to store server config
     auto server_config_ptr = std::make_shared<std::tuple<std::string, int>>(server_ip, server_port);
-    config_["server"] = std::static_pointer_cast<void>(server_config_ptr);
+    config_[SERVER_CONFIG_STR] = std::static_pointer_cast<void>(server_config_ptr);
   }
 
   // load logger config
@@ -443,6 +441,94 @@ namespace multiplayer_server
 #endif
 
     // insert data ptr into config_ to store logger config
-    config_[logger_name] = std::static_pointer_cast<void>(data_ptr);
+    config_[LOG_CONFIG_STR + logger_name] = std::static_pointer_cast<void>(data_ptr);
+  }
+
+  // load login configuration
+  void GameConfig::load_login_config(const JsonTree &config_tree)
+  {
+    // load login config
+    // first, check the existence of login config
+#ifdef USE_BOOST_JSON_PARSER
+    if (config_tree.find(LOGIN_CONFIG_STR) == config_tree.not_found())
+    {
+      logger_->error("login config not exist");
+      throw std::exception("login config not exist");
+      return;
+    }
+#elif USE_RAPIDJSON
+    if (!config_tree.HasMember(LOGIN_CONFIG_STR))
+    {
+      logger_->error("login config not exist");
+      throw std::exception("login config not exist");
+      return;
+    }
+#endif
+
+    auto data_ptr = std::make_shared<LoginEntityConfig>();
+
+    // second, get login config details
+#ifdef USE_BOOST_JSON_PARSER
+    const auto &login_config = config_tree.get_child(LOGIN_CONFIG_STR);
+#elif USE_RAPIDJSON
+    const auto &login_config = config_tree[LOGIN_CONFIG_STR];
+#endif
+  
+    // third, check the existence of login config details
+#ifdef USE_BOOST_JSON_PARSER
+    // entity class
+    if (login_config.find("entity") == login_config.not_found())
+    {
+      logger_->error("login entity config not exist");
+      throw std::exception("login entity config not exist");
+      return;
+    }
+    data_ptr->entity_class_name = login_config["entity"].GetString();
+
+    // entity type
+    if (login_config.find("entity_type") == login_config.not_found())
+    {
+      logger_->error("login entity type config not exist");
+      throw std::exception("login entity config not exist");
+      return;
+    }
+    data_ptr->entity_type = login_config["entity_type"].GetString();
+
+    if (login_config.find("components") != login_config.not_found())
+    {
+      for (const auto &component : login_config.get_child("components"))
+      {
+        data_ptr->entity_components.emplace_back(component.get<std::string>());
+      }
+    }
+#elif USE_RAPIDJSON
+    // get entity class
+    if (!login_config.HasMember("entity") || !login_config["entity"].IsString())
+    {
+      logger_->error("login entity config not exist");
+      throw std::exception("login entity config not exist");
+      return;
+    }
+    data_ptr->entity_class_name = login_config["entity"].GetString();
+
+    // get entity type
+    if (!login_config.HasMember("entity_type") || !login_config["entity"].IsString())
+    {
+      logger_->error("login entity type config not exist");
+      throw std::exception("login entity type config not exist");
+      return;
+    }
+    data_ptr->entity_type = login_config["entity_type"].GetString();
+
+    // get entity components, it's a list
+    if (login_config.HasMember("components") && login_config["components"].IsArray())
+    {
+      for (const auto &component : login_config["compon ents"].GetArray())
+      {
+        data_ptr->entity_components.emplace_back(component.GetString());
+      }
+    }
+#endif
+    config_[LOGIN_CONFIG_STR] = std::static_pointer_cast<void>(data_ptr);
   }
 }

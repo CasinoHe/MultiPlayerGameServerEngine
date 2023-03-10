@@ -14,6 +14,10 @@
 #include <memory>
 #include <unordered_map>
 
+#define SERVER_CONFIG_STR "server"
+#define LOG_CONFIG_STR "logger"
+#define LOGIN_CONFIG_STR "login"
+
 namespace multiplayer_server
 {
 #ifdef USE_BOOST_JSON_PARSER
@@ -23,6 +27,13 @@ namespace multiplayer_server
   using JsonTree = rapidjson::Document;
   using JsonNode = rapidjson::Value;
 #endif
+
+  struct LoginEntityConfig
+  {
+    std::string entity_class_name = "";
+    std::string entity_type = "";
+    std::vector<std::string> entity_components;
+  };
 
   class GameConfig
   {
@@ -66,6 +77,8 @@ namespace multiplayer_server
     // load game logger config data, including log level, log file path...
     void load_logger_config(const JsonTree &tree);
     void load_single_logger_config(const JsonNode &node);
+    // load login config data, including login entity type, login entity config...
+    void load_login_config(const JsonTree &tree);
 
   private:
     // config node

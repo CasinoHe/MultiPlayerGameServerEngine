@@ -64,7 +64,7 @@ int main(int argc, const char **argv)
   }
 
   // create game_main object, init all services
-  auto game_main = std::make_unique<GameMain>(config_file_path);
+  auto game_main = std::make_shared<GameMain>(config_file_path);
   game_main->init_all_game_services();
 
   // create asio server

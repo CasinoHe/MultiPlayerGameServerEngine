@@ -31,7 +31,19 @@ namespace multiplayer_server
     if (name == "LoginService")
     {
       // create a login service
-      std::shared_ptr<LoginService> login_service = entity_factory_.create_entity<LoginService>(ip_, port_);
+      std::shared_ptr<LoginService> login_service = entity_factory_.create_entity<LoginService>(ip_, port_, game_config_);
+
+      if (login_service)
+      {
+        if (game_services_.find(name) == game_services_.end())
+        {
+          game_services_.emplace(name, std::list<std::shared_ptr<ServerEntity>>(1, login_service));
+        }
+        else
+        {
+          game_services_[name].push_back(login_service);
+        }
+      }
     }
   }
 
@@ -40,7 +52,41 @@ namespace multiplayer_server
     auto iter = game_services_.find(service_name);
     if (iter != game_services_.end())
     {
-      return iter->second;
+      return iter->second.front();
+    }
+    return nullptr;
+  }
+
+  // get game service by id
+  std::shared_ptr<ServerEntity> GameMain::get_game_service(const std::string &service_name, const std::string &id)
+  {
+    auto iter = game_services_.find(service_name);
+    if (iter != game_services_.end())
+    {
+      for (auto &service : iter->second)
+      {
+        if (service->get_id() == id)
+        {
+          return service;
+        }
+      }
+    }
+    return nullptr;
+  }
+
+  // get local game service
+  std::shared_ptr<ServerEntity> GameMain::get_local_game_service(const std::string &service_name)
+  {
+    auto iter = game_services_.find(service_name);
+    if (iter != game_services_.end())
+    {
+      for (auto &service : iter->second)
+      {
+        if (service->is_local(ip_, port_))
+        {
+          return service;
+        }
+      }
     }
     return nullptr;
   }
@@ -62,13 +108,5 @@ namespace multiplayer_server
       return login_service->on_client_connected(connection);
     }
     return false;
-  }
-
-  // create login entity using the data read from config file
-  std::shared_ptr<ServerEntity> GameMain::create_login_entity()
-  {
-    // first, get the node for the login entity
-    // JsonNode login_entity_node = config_parser_["login_entity"];
-    return nullptr;
   }
 }
