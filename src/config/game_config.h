@@ -13,6 +13,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #define SERVER_CONFIG_STR "server"
 #define LOG_CONFIG_STR "logger"
@@ -32,7 +33,7 @@ namespace multiplayer_server
   {
     std::string entity_class_name = "";
     std::string entity_type = "";
-    std::vector<std::string> entity_components;
+    std::vector<std::string> entity_components = {};
   };
 
   class GameConfig
