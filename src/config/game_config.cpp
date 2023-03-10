@@ -4,6 +4,7 @@
 #include <fstream>
 #include <tuple>
 #include <optional>
+#include <stdexcept>
 
 namespace multiplayer_server
 {
@@ -453,14 +454,14 @@ namespace multiplayer_server
     if (config_tree.find(LOGIN_CONFIG_STR) == config_tree.not_found())
     {
       logger_->error("login config not exist");
-      throw std::exception("login config not exist");
+      throw std::runtime_error("login config not exist");
       return;
     }
 #elif USE_RAPIDJSON
     if (!config_tree.HasMember(LOGIN_CONFIG_STR))
     {
       logger_->error("login config not exist");
-      throw std::exception("login config not exist");
+      throw std::runtime_error("login config not exist");
       return;
     }
 #endif
@@ -480,7 +481,7 @@ namespace multiplayer_server
     if (login_config.find("entity") == login_config.not_found())
     {
       logger_->error("login entity config not exist");
-      throw std::exception("login entity config not exist");
+      throw std::runtime_error("login entity config not exist");
       return;
     }
     data_ptr->entity_class_name = login_config["entity"].GetString();
@@ -489,7 +490,7 @@ namespace multiplayer_server
     if (login_config.find("entity_type") == login_config.not_found())
     {
       logger_->error("login entity type config not exist");
-      throw std::exception("login entity config not exist");
+      throw std::runtime_error("login entity config not exist");
       return;
     }
     data_ptr->entity_type = login_config["entity_type"].GetString();
@@ -506,7 +507,7 @@ namespace multiplayer_server
     if (!login_config.HasMember("entity") || !login_config["entity"].IsString())
     {
       logger_->error("login entity config not exist");
-      throw std::exception("login entity config not exist");
+      throw std::runtime_error("login entity config not exist");
       return;
     }
     data_ptr->entity_class_name = login_config["entity"].GetString();
@@ -515,7 +516,7 @@ namespace multiplayer_server
     if (!login_config.HasMember("entity_type") || !login_config["entity"].IsString())
     {
       logger_->error("login entity type config not exist");
-      throw std::exception("login entity type config not exist");
+      throw std::runtime_error("login entity type config not exist");
       return;
     }
     data_ptr->entity_type = login_config["entity_type"].GetString();
