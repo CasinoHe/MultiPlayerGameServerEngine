@@ -524,7 +524,7 @@ namespace multiplayer_server
     // get entity components, it's a list
     if (login_config.HasMember("components") && login_config["components"].IsArray())
     {
-      for (const auto &component : login_config["compon ents"].GetArray())
+      for (const auto &component : login_config["components"].GetArray())
       {
         data_ptr->entity_components.emplace_back(component.GetString());
       }
