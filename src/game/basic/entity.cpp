@@ -61,4 +61,17 @@ namespace multiplayer_server
       }
     }
   }
+
+  // update owner of component
+  void Entity::update_component_owner(std::shared_ptr<Component> component, std::shared_ptr<Entity> owner)
+  {
+    if (!owner)
+    {
+      component->reset_owner();
+    }
+    else
+    {
+      component->set_owner(owner);
+    }
+  }
 }

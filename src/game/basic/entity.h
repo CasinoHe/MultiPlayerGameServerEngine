@@ -151,7 +151,7 @@ namespace multiplayer_server
       {
         return false;
       }
-      component->set_owner(shared_from_this());
+      update_component_owner(component, shared_from_this());
       components_.emplace(type, component);
       // log
       logger_->debug("Entity {} attach component {}", id_, type);
@@ -172,10 +172,11 @@ namespace multiplayer_server
         return true;
       }
       // release owner weak_ptr to avoid subsequent use
-      it->second->reset_owner();
+      update_component_owner(it->second, nullptr);
 
       return false;
     }
+
     // delete component by exists component
     template<typename T>
     [[nodiscard]] bool delete_component(std::shared_ptr<T> component)
@@ -187,14 +188,21 @@ namespace multiplayer_server
         components_.erase(it);
         // debug log
         logger_->debug("Entity {} delete component {}", id_, type);
+        update_component_owner(component, nullptr)
         return true;
       }
       return false;
     }
+
     // delete all components
     void delete_all_components();
+
     // set validate value
     void set_validate(bool validate) { validate_ = validate; }
+
+  private:
+    // to avoid include component.h and add friend class Component
+    void update_component_owner(std::shared_ptr<Component> component, std::shared_ptr<Entity> owner);
 
   protected:
     // entity name
