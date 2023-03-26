@@ -74,7 +74,7 @@ int main(int argc, const char **argv)
 
   // register connected callback
   std::function<bool(std::shared_ptr<Connection>)> callback = std::bind(&GameMain::on_client_connected, game_main.get(), std::placeholders::_1);
-  asio_server->register_on_tcp_connection_accepted(callback);
+  asio_server->regist_on_new_player_connected(callback);
 
   // start asio server
   asio_server->start();

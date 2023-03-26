@@ -68,6 +68,9 @@ namespace multiplayer_server
       return entity;
     }
 
+    // destroy an entity by id
+    void destroy_entity(const std::string& id);
+
   // non-copyable
   private:
     EntityFactory();

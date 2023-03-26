@@ -287,6 +287,19 @@ namespace multiplayer_server
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
     socket_->close(error);
     set_status(ConnectionStatus::kClosed);
+
+    // call disconnected callback
+    if (disconnected_callback_)
+    {
+      try 
+      {
+        disconnected_callback_();
+      }
+      catch(const std::exception& e)
+      {
+        logger_->error("on_closed callback error {}", e.what());
+      }
+    }
   }
 
   // keep alive

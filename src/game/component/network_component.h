@@ -6,13 +6,15 @@
 #include "game/basic/component.h"
 #include "network/connection.h"
 #include <memory>
+#include <map>
+#include <functional>
 
 namespace multiplayer_server
 {
   class NetworkComponent : public Component
   {
   public:
-    NetworkComponent(std::shared_ptr<Connection> connection = nullptr);
+    NetworkComponent(std::shared_ptr<Entity> owner, std::shared_ptr<Connection> connection = nullptr);
     virtual ~NetworkComponent();
 
     // non-copyable
@@ -27,6 +29,10 @@ namespace multiplayer_server
     // set connection
     void set_connection(std::shared_ptr<Connection> connection) { connection_ = connection; }
 
+    // handle disconnect when connection is disconnected
+    void handle_disconnect();
+    bool register_disconnect_handler(const std::string &name, std::function<void(const std::string &id)> handler);
+
     virtual void update(float dt);
     virtual void render();
 
@@ -35,5 +41,6 @@ namespace multiplayer_server
   private:
     // connection
     std::shared_ptr<Connection> connection_;
+    std::map<std::string, std::function<void(const std::string &id)>> disconnect_handlers_;
   };
 }

@@ -28,7 +28,6 @@ namespace multiplayer_server
   // implement asio tcp connection handler
   bool LoginService::on_client_connected(std::shared_ptr<Connection> connection)
   {
-    auto conn = connection;
     logger_->debug("LoginService::on_client_connected");
 
     // create entity for this connection use configuration data from game config
@@ -82,10 +81,22 @@ namespace multiplayer_server
       auto network_component = entity->get_component<NetworkComponent>();
       if (network_component)
       {
-        network_component->set_connection(conn);
+        network_component->set_connection(connection);
       }
     }
 
     return true;
+  }
+
+  void LoginService::on_client_disconnected(const std::string &id)
+  {
+    auto entity = entity_factory_.get_entity(id);
+    if (!entity)
+    {
+      return;
+    }
+
+    logger_->debug("LoginService::on_client_disconnected");
+    return;
   }
 }

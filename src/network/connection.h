@@ -48,6 +48,8 @@ namespace multiplayer_server
     virtual void on_connected(bool result) = 0;
     // set rsync connected callback, argument is a bool, true means connected succeed
     virtual void set_connected_callback(std::function<void(bool)> callback) { connected_callback_ = callback; }
+    // set disconnected callback
+    virtual void set_disconnected_callback(std::function<void()> callback) { disconnected_callback_ = callback; }
 
     // send data to remote host
     // return true if send successfully

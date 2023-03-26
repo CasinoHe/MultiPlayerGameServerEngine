@@ -26,6 +26,9 @@ namespace multiplayer_server
     // game only need to know the connection is connected and use the abstract connection type
     bool on_client_connected(std::shared_ptr<Connection> connection);
 
+    // game only need to know the connection is disconnected
+    void on_client_disconnected(const std::string &id);
+
   private:
     // game config
     std::shared_ptr<GameConfig> game_config_;

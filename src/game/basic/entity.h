@@ -193,6 +193,8 @@ namespace multiplayer_server
     }
     // delete all components
     void delete_all_components();
+    // set validate value
+    void set_validate(bool validate) { validate_ = validate; }
 
   protected:
     // entity name
@@ -205,5 +207,8 @@ namespace multiplayer_server
     
     // logger object
     std::shared_ptr<LoggerImp> logger_ = nullptr;
+
+    // bool value, if the entity is valid
+    bool validate_ = true;
   };
 }

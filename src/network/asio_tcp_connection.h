@@ -68,9 +68,6 @@ namespace multiplayer_server
     // handle receive
     void handle_receive(const boost::system::error_code& error, size_t bytes_transferred);
 
-    // handle close
-    void handle_close(const boost::system::error_code& error);
-
     // heartbeat, check connection status especially for udp
     virtual void heartbeat() override {}; // tcp do nothing
     virtual void set_keep_alive(bool enable) override;

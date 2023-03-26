@@ -7,7 +7,7 @@
 		"entity": "ServerEntity",
 		"entity_type": "kPlayerEntity",
 		"components": [
-
+			"NetworkComponent"
 		]
 	},
 	"logger": [
