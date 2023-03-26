@@ -188,7 +188,7 @@ namespace multiplayer_server
         components_.erase(it);
         // debug log
         logger_->debug("Entity {} delete component {}", id_, type);
-        update_component_owner(component, nullptr)
+        update_component_owner(component, nullptr);
         return true;
       }
       return false;
