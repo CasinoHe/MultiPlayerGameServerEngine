@@ -74,7 +74,8 @@ namespace multiplayer_server
 
   // abstract base class for all entities
   // define the base interface
-  class Entity
+  // we need to pass this pointer to component to get the owner, so Entity should inherit from std::enable_shared_from_this
+  class Entity : public std::enable_shared_from_this<Entity>
   {
   public:
     Entity(const std::string &id);
@@ -116,6 +117,7 @@ namespace multiplayer_server
       }
       return nullptr;
     }
+
     // add component
     template<typename T>
     std::shared_ptr<T> add_component()
@@ -129,12 +131,13 @@ namespace multiplayer_server
       {
         return std::static_pointer_cast<T>(it->second);
       }
-      std::shared_ptr<T> component = std::make_shared<T>();
+      std::shared_ptr<T> component = std::make_shared<T>(shared_from_this());
       components_.emplace(type, component);
       // debug log
       logger_->debug("Entity {} add component {}", id_, type);
       return component;
     }
+
     // attach component
     template<typename T>
     bool attach_component(std::shared_ptr<T> component)
@@ -148,11 +151,13 @@ namespace multiplayer_server
       {
         return false;
       }
+      component->set_owner(shared_from_this());
       components_.emplace(type, component);
       // log
       logger_->debug("Entity {} attach component {}", id_, type);
       return true;
     }
+    
     // delete component
     template<typename T>
     [[nodiscard]] bool delete_component()
@@ -166,6 +171,8 @@ namespace multiplayer_server
         logger_->debug("Entity {} delete component {}", id_, type);
         return true;
       }
+      // release owner weak_ptr to avoid subsequent use
+      it->second->reset_owner();
 
       return false;
     }

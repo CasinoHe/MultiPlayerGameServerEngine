@@ -17,8 +17,8 @@ namespace multiplayer_server
   {
     logger_->debug("Entity {} destructed", id_);
 
-    // release all components
-    delete_all_components();
+    // call the before destruct function
+    before_destruct();
   }
 
   // delete all components
