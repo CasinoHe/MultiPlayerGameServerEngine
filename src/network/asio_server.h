@@ -34,7 +34,7 @@ namespace multiplayer_server
     void handle_udp_accept(const boost::system::error_code &error);
 
     // regist callback when a new player send a connection request
-    void regist_on_new_player_connected(std::function<bool(std::shared_ptr<Connection>)> &callback) { on_connection_accepted_callback_ = callback; }
+    void regist_on_client_connected(std::function<bool(std::shared_ptr<Connection>)> &callback) { on_connection_accepted_callback_ = callback; }
     // game module callback when server closed
     void regist_on_server_closed(std::function<void()> &callback) { on_server_closed_callback_ = callback; }
 

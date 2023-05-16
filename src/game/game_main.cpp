@@ -28,19 +28,21 @@ namespace multiplayer_server
 
   void GameMain::init_game_service(const std::string &name)
   {
-    std::shared_ptr<ServerEntity> game_service = nullptr;
-
-    if (name == "LoginService")
+    if (game_services_create_handler_.find(name) != game_services_create_handler_.end())
     {
-      // create a login service
-      std::shared_ptr<LoginService> login_service = entity_factory_.create_entity<LoginService>(ip_, port_, game_config_);
-      game_service = std::dynamic_pointer_cast<ServerEntity>(login_service);
+      // create a game service
+      std::shared_ptr<ServerEntity> game_service = game_services_create_handler_[name]();
+      if (game_service)
+      {
+        // add to game services
+        record_game_service(name, game_service);
+      }
     }
-
-    if (game_service)
+    else
     {
-      // add to game services
-      record_game_service(name, game_service);
+      // log error
+      g_logger->error("GameMain::init_game_service: can't find service create handler for {}", name);
+      throw std::runtime_error("GameMain::init_game_service: can't find service create handler for " + name);
     }
   }
 
@@ -90,11 +92,13 @@ namespace multiplayer_server
 
   void GameMain::init_all_game_services()
   {
-    // first, get all services that need to be init from game config
+    // get all services that need to be init from game config
+    auto services = game_config_->get<std::vector<GameServiceConfig>>(SERVER_CONFIG_STR);
 
-    init_game_service("LoginService");
-
-    // then, read config file to init other services
+    for (auto &service : *services)
+    {
+      init_game_service(service.service_name);
+    }
   }
 
   bool GameMain::on_client_connected(std::shared_ptr<Connection> connection)
@@ -113,5 +117,14 @@ namespace multiplayer_server
   {
     auto [iter, inserted] = game_services_.insert_or_assign(name, std::list<std::shared_ptr<ServerEntity>>());
     iter->second.emplace_back(std::move(game_service));
+  }
+
+  // preload services create handler
+  void GameMain::preload_services_create_handler()
+  {
+    game_services_create_handler_["LoginService"] = [this]() {
+      std::shared_ptr<LoginService> login_service = entity_factory_.create_entity<LoginService>(ip_, port_, game_config_);
+      return std::dynamic_pointer_cast<ServerEntity>(login_service);
+    };
   }
 }

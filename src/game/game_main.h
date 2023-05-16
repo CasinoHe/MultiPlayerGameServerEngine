@@ -10,6 +10,7 @@
 #include <functional>
 #include <tuple>
 #include <list>
+#include <functional>
 
 namespace multiplayer_server
 {
@@ -53,6 +54,9 @@ namespace multiplayer_server
     std::shared_ptr<GameConfig> get_game_config() const { return game_config_; }
 
   private:
+    // preload services create handler
+    void preload_services_create_handler();
+
     // init a game service
     void init_game_service(const std::string &name);
 
@@ -72,5 +76,8 @@ namespace multiplayer_server
 
     // save all services, maybe not in a same process
     std::map<std::string, std::list<std::shared_ptr<ServerEntity>>> game_services_;
+
+    // save all services create handler
+    std::map<std::string, std::function<std::shared_ptr<ServerEntity>()>> game_services_create_handler_;
   };
 }
