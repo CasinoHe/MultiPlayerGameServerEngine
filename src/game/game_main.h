@@ -49,6 +49,7 @@ namespace multiplayer_server
     int get_port() const { return port_; }
     // return ip and port as tuple
     std::tuple<std::string, int> get_ip_port() const { return std::make_tuple(ip_, port_); }
+    int get_concurrency() const { return concurrency_; }
 
     // get game config shared_ptr
     std::shared_ptr<GameConfig> get_game_config() const { return game_config_; }
@@ -67,6 +68,7 @@ namespace multiplayer_server
     // save ip and port
     std::string ip_ = "127.0.0.1";
     int port_ = 8080;
+    int concurrency_ = 2;
 
     // game config file parser
     std::shared_ptr<GameConfig> game_config_;

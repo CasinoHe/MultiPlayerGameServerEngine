@@ -26,7 +26,7 @@ namespace multiplayer_server
   }
 
   // return tuple of server ip and port
-  std::shared_ptr<std::tuple<std::string, int>> GameConfig::get_server_ip_port()
+  std::shared_ptr<AsioServerConfig> GameConfig::get_server_ip_port()
   {
     auto iter = config_.find(SERVER_CONFIG_STR);
     if (iter == config_.end())
@@ -34,7 +34,7 @@ namespace multiplayer_server
       return nullptr;
     }
 
-    return std::static_pointer_cast<std::tuple<std::string, int>>(iter->second);
+    return std::static_pointer_cast<AsioServerConfig>(iter->second);
   }
 
   void GameConfig::reload_config()
@@ -194,8 +194,28 @@ namespace multiplayer_server
     int server_port = server_config["port"].GetInt();
 #endif
 
+    // load concurrency
+#ifdef USE_BOOST_JSON_PARSER
+    if (server_config.find("concurrency") == server_config.not_found())
+    {
+      logger_->error("server concurrency not exist");
+      return;
+    }
+    int concurrency = server_config.get<int>("concurrency");
+#elif USE_RAPIDJSON
+    if (!server_config.HasMember("concurrency"))
+    {
+      logger_->error("server concurrency not exist");
+      return;
+    }
+    int concurrency = server_config["concurrency"].GetInt();
+#endif
+
     // make a shared_ptr of tuple to store server config
-    auto server_config_ptr = std::make_shared<std::tuple<std::string, int>>(server_ip, server_port);
+    auto server_config_ptr = std::make_shared<AsioServerConfig>();
+    server_config_ptr->ip = server_ip;
+    server_config_ptr->port = server_port;
+    server_config_ptr->concurrency = concurrency;
     config_[SERVER_CONFIG_STR] = std::static_pointer_cast<void>(server_config_ptr);
   }
 

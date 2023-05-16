@@ -24,6 +24,7 @@ namespace multiplayer_server
     virtual bool set_io_context_thread_count(int count) { io_context_thread_count_ = count; return true; }
     virtual bool start() override;
     virtual bool stop() override;
+    void wait();
 
     // start tcp or udp accept
     void start_tcp_accept();
@@ -48,7 +49,7 @@ namespace multiplayer_server
 
     // io context thread pool
     std::vector<std::thread> io_context_threads_pool_;
-    int io_context_thread_count_ = 0;
+    int io_context_thread_count_ = 2;
     
     // callback game module when a tcp connection is accepted
     std::function<bool(std::shared_ptr<Connection>)> on_connection_accepted_callback_;

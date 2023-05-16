@@ -43,6 +43,13 @@ namespace multiplayer_server
     std::vector<std::string> service_components = {};
   };
 
+  struct AsioServerConfig
+  {
+    std::string ip = "";
+    int port = 0;
+    int concurrency = 0;
+  };
+
   class GameConfig
   {
   public:
@@ -72,7 +79,7 @@ namespace multiplayer_server
     }
 
     // get server ip and server port
-    std::shared_ptr<std::tuple<std::string, int>> get_server_ip_port();
+    std::shared_ptr<AsioServerConfig> get_server_ip_port();
 
   private:
     // load config from file

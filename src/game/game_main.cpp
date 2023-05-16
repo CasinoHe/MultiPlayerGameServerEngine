@@ -18,8 +18,9 @@ namespace multiplayer_server
       return;
     }
 
-    ip_ = std::get<0>(*ptr);
-    port_ = std::get<1>(*ptr);
+    ip_ = ptr->ip;
+    port_ = ptr->port;
+    concurrency_ = ptr->concurrency;
 
     preload_services_create_handler();
   }
