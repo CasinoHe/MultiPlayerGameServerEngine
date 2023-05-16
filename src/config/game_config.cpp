@@ -97,6 +97,7 @@ namespace multiplayer_server
     load_server_config(config_tree);
     load_logger_config(config_tree);
     load_login_config(config_tree);
+    load_services_config(config_tree);
   }
 
   // load server config
@@ -531,5 +532,79 @@ namespace multiplayer_server
     }
 #endif
     config_[LOGIN_CONFIG_STR] = std::static_pointer_cast<void>(data_ptr);
+  }
+
+  // load game services configuration
+  void GameConfig::load_services_config(const JsonTree &config_tree)
+  {
+    // load game services config
+    // first, check the existence of game services config
+#ifdef USE_BOOST_JSON_PARSER
+    if (config_tree.find(SERVICES_CONFIG_STR) == config_tree.not_found())
+    {
+      logger_->error("services config not exist");
+      throw std::runtime_error("services config not exist");
+      return;
+    }
+#elif USE_RAPIDJSON
+    if (!config_tree.HasMember(SERVICES_CONFIG_STR))
+    {
+      logger_->error("services config not exist");
+      throw std::runtime_error("services config not exist");
+      return;
+    }
+#endif
+      
+    auto data_ptr = std::make_shared<std::vector<GameServiceConfig>>();
+
+    // second, get game services config details
+#ifdef USE_BOOST_JSON_PARSER
+    const auto &services_config = config_tree.get_child(SERVICES_CONFIG_STR);
+#elif USE_RAPIDJSON
+    const auto &services_config = config_tree[SERVICES_CONFIG_STR];
+#endif
+
+    // third, check the existence of game services config details
+#ifdef USE_BOOST_JSON_PARSER
+    if (services_config.find("services") == services_config.not_found())
+    {
+      logger_->error("services config not exist");
+      throw std::runtime_error("services config not exist");
+      return;
+    }
+
+    for (const auto &service : services_config.get_child("services"))
+    {
+      ServiceConfig service_config;
+      service_config.service_name = service.second.get<std::string>("name");
+      for (const auto &component : service.second.get_child("components"))
+      {
+        service_config.components.emplace_back(component.second.get<std::string>(""));
+      }
+      data_ptr->emplace_back(service_config);
+    }
+#elif USE_RAPIDJSON
+    if (!services_config.HasMember("services") || !services_config["services"].IsObject())
+    {
+      logger_->error("services config not exist");
+      throw std::runtime_error("services config not exist");
+      return;
+    }
+
+    for (const auto &service : services_config["services"].GetArray())
+    {
+      GameServiceConfig service_config;
+      service_config.service_name = service["name"].GetString();
+
+      for (const auto &component : service["components"].GetArray())
+      {
+        service_config.service_components.emplace_back(component.GetString());
+      }
+
+      data_ptr->emplace_back(service_config);
+    }
+#endif
+
+    config_[SERVICES_CONFIG_STR] = std::static_pointer_cast<void>(data_ptr);
   }
 }

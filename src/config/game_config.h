@@ -18,6 +18,7 @@
 #define SERVER_CONFIG_STR "server"
 #define LOG_CONFIG_STR "logger"
 #define LOGIN_CONFIG_STR "login"
+#define SERVICES_CONFIG_STR "services"
 
 namespace multiplayer_server
 {
@@ -34,6 +35,12 @@ namespace multiplayer_server
     std::string entity_class_name = "";
     std::string entity_type = "";
     std::vector<std::string> entity_components = {};
+  };
+
+  struct GameServiceConfig
+  {
+    std::string service_name = "";
+    std::vector<std::string> service_components = {};
   };
 
   class GameConfig
@@ -80,6 +87,8 @@ namespace multiplayer_server
     void load_single_logger_config(const JsonNode &node);
     // load login config data, including login entity type, login entity config...
     void load_login_config(const JsonTree &tree);
+    // load game services config
+    void load_services_config(const JsonTree &tree);
 
   private:
     // config node

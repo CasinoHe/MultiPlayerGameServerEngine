@@ -10,6 +10,14 @@
 			"NetworkComponent"
 		]
 	},
+	"services": [
+		{
+			"name": "LoginService",
+			"components": [
+				"NetworkComponent"
+			]
+		}
+	],
 	"logger": [
 		{
 			"name": "main_log",
