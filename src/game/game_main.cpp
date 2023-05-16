@@ -20,6 +20,8 @@ namespace multiplayer_server
 
     ip_ = std::get<0>(*ptr);
     port_ = std::get<1>(*ptr);
+
+    preload_services_create_handler();
   }
 
   GameMain::~GameMain()
@@ -28,6 +30,11 @@ namespace multiplayer_server
 
   void GameMain::init_game_service(const std::string &name)
   {
+    if (name.empty())
+    {
+      return;
+    }
+
     if (game_services_create_handler_.find(name) != game_services_create_handler_.end())
     {
       // create a game service
@@ -93,7 +100,13 @@ namespace multiplayer_server
   void GameMain::init_all_game_services()
   {
     // get all services that need to be init from game config
-    auto services = game_config_->get<std::vector<GameServiceConfig>>(SERVER_CONFIG_STR);
+    auto services = game_config_->get<std::vector<GameServiceConfig>>(SERVICES_CONFIG_STR);
+
+    if (!services)
+    {
+      g_logger->error("GameMain::init_all_game_services: can't find services in config");
+      return;
+    }
 
     for (auto &service : *services)
     {

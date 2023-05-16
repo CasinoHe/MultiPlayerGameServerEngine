@@ -5,6 +5,7 @@
 #include <tuple>
 #include <optional>
 #include <stdexcept>
+#include <iostream>
 
 namespace multiplayer_server
 {
@@ -94,10 +95,18 @@ namespace multiplayer_server
 #endif
 
     // then, call every load function to load data from config file
-    load_server_config(config_tree);
-    load_logger_config(config_tree);
-    load_login_config(config_tree);
-    load_services_config(config_tree);
+    try
+    {
+      load_server_config(config_tree);
+      load_logger_config(config_tree);
+      load_login_config(config_tree);
+      load_services_config(config_tree);
+    }
+    catch(const std::exception& e)
+    {
+      std::cerr << "load config failed, error: " << std::endl;
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   // load server config
@@ -566,14 +575,7 @@ namespace multiplayer_server
 
     // third, check the existence of game services config details
 #ifdef USE_BOOST_JSON_PARSER
-    if (services_config.find("services") == services_config.not_found())
-    {
-      logger_->error("services config not exist");
-      throw std::runtime_error("services config not exist");
-      return;
-    }
-
-    for (const auto &service : services_config.get_child("services"))
+    for (const auto &service : services_config)
     {
       ServiceConfig service_config;
       service_config.service_name = service.second.get<std::string>("name");
@@ -584,14 +586,14 @@ namespace multiplayer_server
       data_ptr->emplace_back(service_config);
     }
 #elif USE_RAPIDJSON
-    if (!services_config.HasMember("services") || !services_config["services"].IsObject())
+    if (!services_config.IsArray())
     {
-      logger_->error("services config not exist");
-      throw std::runtime_error("services config not exist");
+      logger_->error("services config is not array");
+      throw std::runtime_error("services config is not array");
       return;
     }
 
-    for (const auto &service : services_config["services"].GetArray())
+    for (const auto &service : services_config.GetArray())
     {
       GameServiceConfig service_config;
       service_config.service_name = service["name"].GetString();
