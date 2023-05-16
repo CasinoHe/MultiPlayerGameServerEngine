@@ -34,4 +34,30 @@ namespace multiplayer_server
 
     return proxy_->get_ip() == ip && proxy_->get_port() == port;
   }
+
+  // get server entity type from string
+  ServerEntity::ServerEntityType ServerEntity::get_type_from_string(const std::string &type)
+  {
+    if (type == "kMirrorEntity")
+    {
+      return ServerEntityType::kMirrorEntity;
+    }
+    else if (type == "kServiceEntity")
+    {
+      return ServerEntityType::kServiceEntity;
+    }
+    else if (type == "kPlayerEntity")
+    {
+      return ServerEntityType::kPlayerEntity;
+    }
+    else if (type == "kAIEntity")
+    {
+      return ServerEntityType::kAIEntity;
+    }
+    else
+    {
+      // default is service entity
+      return ServerEntityType::kServiceEntity;
+    }
+  }
 }

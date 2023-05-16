@@ -43,32 +43,7 @@ namespace multiplayer_server
     // second, create entity
     if (entity_class_name == "ServerEntity")
     {
-      auto entity_type = ServerEntityType::kPlayerEntity;
-      if (data_ptr->entity_type == "kMirrorEntity")
-      {
-        entity_type = ServerEntityType::kMirrorEntity;
-      }
-      else if (data_ptr->entity_type == "kServiceEntity")
-      {
-        entity_type = ServerEntityType::kServiceEntity;
-      }
-      else if (data_ptr->entity_type == "kPlayerEntity")
-      {
-        entity_type = ServerEntityType::kPlayerEntity;
-      }
-      else if (data_ptr->entity_type == "kAIEntity")
-      {
-        entity_type = ServerEntityType::kAIEntity;
-      }
-      else if (data_ptr->entity_type == "kFreelyCombinedEntity")
-      {
-        entity_type = ServerEntityType::kFreelyCombinedEntity;
-      }
-      else
-      {
-        logger_->error("LoginService::on_client_connected, can not find entity type: {}", data_ptr->entity_type);
-        return false;
-      }
+      auto entity_type = ServerEntity::get_type_from_string(data_ptr->entity_type);
 
       auto entity = entity_factory_.create_entity<ServerEntity>(entity_type, proxy_->get_ip(), proxy_->get_port());
 
@@ -82,7 +57,13 @@ namespace multiplayer_server
       if (network_component)
       {
         network_component->set_connection(connection);
+        network_component->register_disconnect_handler("LoginService", std::bind(&LoginService::on_client_disconnected, this, std::placeholders::_1));
       }
+
+      // TODO:
+      // 1. authorize the entity
+      // 2. check if the entity is already in the game or already in global entity manager
+      // 3. register entity to global entity manager so that any other entity can find this entity by id wherever it is and which process it is
     }
 
     return true;
@@ -97,6 +78,10 @@ namespace multiplayer_server
     }
 
     logger_->debug("LoginService::on_client_disconnected");
+
+    // TODO:
+    // unregister entity from global entity manager
+
     return;
   }
 }

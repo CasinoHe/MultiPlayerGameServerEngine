@@ -44,6 +44,9 @@ namespace multiplayer_server
     // if this entity is a local entity
     bool is_local(const std::string &ip, int port);
 
+    // get entity type from string
+    static ServerEntityType get_type_from_string(const std::string &type);
+
   protected:
     // server entity type
     ServerEntityType type_ = ServerEntityType::kServiceEntity;

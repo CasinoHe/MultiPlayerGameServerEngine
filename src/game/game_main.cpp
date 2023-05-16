@@ -28,22 +28,19 @@ namespace multiplayer_server
 
   void GameMain::init_game_service(const std::string &name)
   {
+    std::shared_ptr<ServerEntity> game_service = nullptr;
+
     if (name == "LoginService")
     {
       // create a login service
       std::shared_ptr<LoginService> login_service = entity_factory_.create_entity<LoginService>(ip_, port_, game_config_);
+      game_service = std::dynamic_pointer_cast<ServerEntity>(login_service);
+    }
 
-      if (login_service)
-      {
-        if (game_services_.find(name) == game_services_.end())
-        {
-          game_services_.emplace(name, std::list<std::shared_ptr<ServerEntity>>(1, login_service));
-        }
-        else
-        {
-          game_services_[name].push_back(login_service);
-        }
-      }
+    if (game_service)
+    {
+      // add to game services
+      record_game_service(name, game_service);
     }
   }
 
@@ -93,7 +90,8 @@ namespace multiplayer_server
 
   void GameMain::init_all_game_services()
   {
-    // first, init required service
+    // first, get all services that need to be init from game config
+
     init_game_service("LoginService");
 
     // then, read config file to init other services
@@ -108,5 +106,12 @@ namespace multiplayer_server
       return login_service->on_client_connected(connection);
     }
     return false;
+  }
+
+  // record game service
+  void GameMain::record_game_service(const std::string& name, std::shared_ptr<ServerEntity> game_service)
+  {
+    auto [iter, inserted] = game_services_.insert_or_assign(name, std::list<std::shared_ptr<ServerEntity>>());
+    iter->second.emplace_back(std::move(game_service));
   }
 }

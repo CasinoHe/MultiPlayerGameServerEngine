@@ -56,6 +56,9 @@ namespace multiplayer_server
     // init a game service
     void init_game_service(const std::string &name);
 
+    // record a game service
+    void record_game_service(const std::string &name, std::shared_ptr<ServerEntity> service);
+
   private:
     // save ip and port
     std::string ip_ = "127.0.0.1";
