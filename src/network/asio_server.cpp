@@ -3,8 +3,6 @@
 
 namespace multiplayer_server
 {
-#define MIN_IO_CONTEXT_THREAD_COUNT 2
-
   AsioServer::AsioServer(const std::string &ip, int port, bool has_tcp, bool has_udp)
       : Server(ip, port, has_tcp, has_udp)
   {
@@ -44,6 +42,7 @@ namespace multiplayer_server
 
   bool AsioServer::stop()
   {
+    logger_->info("stop server on {}:{}", ip_address_, port_);
     // check if already stopped
     if (status_ == ServerStatus::kStopped)
     {
@@ -148,7 +147,10 @@ namespace multiplayer_server
     for (std::size_t i = 0; i < thread_count; i++)
     {
       io_context_threads_pool_.emplace_back([this]()
-                                            { io_context_->run(); });
+                                            { 
+                                            boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(io_context_->get_executor());
+                                            io_context_->run(); 
+                                            });
     }
   }
 

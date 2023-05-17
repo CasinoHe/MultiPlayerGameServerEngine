@@ -70,7 +70,7 @@ int main(int argc, const char **argv)
   // create asio server
   const auto [ip, port] = game_main->get_ip_port();
   auto asio_server = std::make_unique<AsioServer>(ip, port, true, false);
-  asio_server->set_io_context_thread_count(10);
+  asio_server->set_io_context_thread_count(game_main->get_concurrency());
 
   // register connected callback
   std::function<bool(std::shared_ptr<Connection>)> callback = std::bind(&GameMain::on_client_connected, game_main.get(), std::placeholders::_1);
@@ -78,9 +78,7 @@ int main(int argc, const char **argv)
 
   // start asio server
   asio_server->start();
-
-  // Test: wait for 60 seconds
-  std::this_thread::sleep_for(std::chrono::seconds(60));
+  asio_server->wait();
 
   return EXIT_SUCCESS;
 }
